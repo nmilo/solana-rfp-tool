@@ -1,0 +1,2 @@
+What are the transaction processing capability (TPS), transaction time, and transaction fees (gas fees) of your chain?
+Do you have explorers and any recent audit coverage we can review?

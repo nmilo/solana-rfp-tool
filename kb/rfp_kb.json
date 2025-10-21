@@ -1,0 +1,164 @@
+[
+  {
+    "id": "stablecoin_partnerships",
+    "question": "Please provide a list of key partnerships you have in the stablecoin sector.",
+    "answer": "The Solana network is open and permissionless; stablecoin issuers don’t need a formal agreement with the Foundation. However, the Foundation actively supports issuers informally with technical, ecosystem, and business advisory. Examples include PayPal (PYUSD, leveraging token extensions for compliance features), Paxos (USDP, first post-Ethereum NYDFS approval), USDT (~$0.7 B supply), and EURC by Circle.",
+    "tags": ["stablecoin", "partnerships", "paypal", "paxos", "usdc", "usdt", "eurc"]
+  },
+  {
+    "id": "stablecoin_case_studies",
+    "question": "Please provide case studies or examples of successful stablecoin projects on your Blockchain/L2.",
+    "answer": "PayPal’s PYUSD, Paxos USDP, Circle EURC, and Tether USDT are live on Solana. Each leverages Solana’s token-extensions for compliance and performance.",
+    "tags": ["stablecoin", "case study", "paypal", "usdp", "eurc"]
+  },
+  {
+    "id": "user_adoption_stablecoin",
+    "question": "What percentage of wallets hold stablecoins?",
+    "answer": "6.10 % (≈ 3.1 M of 51.1 M total wallets).",
+    "tags": ["user adoption", "wallet", "stablecoin"]
+  },
+  {
+    "id": "average_holdings_stablecoin",
+    "question": "What is the average amount held in stablecoins per wallet?",
+    "answer": "$458.50 USD average balance per wallet.",
+    "tags": ["average", "wallet", "stablecoin"]
+  },
+  {
+    "id": "average_tx_stablecoin",
+    "question": "What is the average number of stablecoin transactions per wallet?",
+    "answer": "Approximately 457 transactions per wallet (90-day average).",
+    "tags": ["stablecoin", "transactions", "activity"]
+  },
+  {
+    "id": "noncustodial_wallets",
+    "question": "Do you support providers for non-custodial or smart wallets?",
+    "answer": "Yes, many third-party wallet providers integrate with Solana, including Phantom, Solflare, Backpack and Glow.",
+    "tags": ["wallet", "non-custodial", "smart wallet"]
+  },
+  {
+    "id": "evm_compatibility",
+    "question": "Is your Blockchain EVM-compatible?",
+    "answer": "No, Solana runs its own high-performance runtime (Solana Virtual Machine) that is not EVM compatible.",
+    "tags": ["evm", "compatibility"]
+  },
+  {
+    "id": "api_sdk",
+    "question": "Can you provide APIs and SDKs documentation for integration?",
+    "answer": "Yes, developer resources and SDKs are available at https://solana.com/developers and https://docs.solana.com/cli/",
+    "tags": ["api", "sdk", "integration", "docs"]
+  },
+  {
+    "id": "self_hosted_node",
+    "question": "Would it be possible to have a node self-hosted? Do you provide support for its setup?",
+    "answer": "Yes, nodes can be self-hosted. The Foundation does not provide direct setup support but community guides exist for validators.",
+    "tags": ["node", "self-hosted", "infrastructure"]
+  },
+  {
+    "id": "rpcs",
+    "question": "What are your providers for RPCs, and what SLAs do they offer?",
+    "answer": "RPC providers include Triton, Helius, Blockdaemon, Quicknode and Alchemy. Each offers its own SLA (typically 99.9 % uptime). The Foundation itself is not an RPC provider.",
+    "tags": ["rpc", "providers", "sla"]
+  },
+  {
+    "id": "cross_chain",
+    "question": "What services allow your blockchain to interoperate cross-chain?",
+    "answer": "Cross-chain options include Wormhole, Allbridge, deBridge and LayerZero (beta).",
+    "tags": ["cross-chain", "interoperability", "bridge"]
+  },
+  {
+    "id": "backward_compatibility",
+    "question": "Do you have backward compatibility with previous versions?",
+    "answer": "Not strictly. Some upgrades are non-backward-compatible but are thoroughly tested in testnet/devnet and communicated in advance to developers.",
+    "tags": ["backward compatibility", "upgrade", "testnet"]
+  },
+  {
+    "id": "oracles",
+    "question": "Is the blockchain compatible with third-party services such as oracles or data providers?",
+    "answer": "Yes, integrations exist with Chainlink, Pyth, Switchboard and Dia.",
+    "tags": ["oracle", "data", "integration"]
+  },
+  {
+    "id": "explorers",
+    "question": "Does your blockchain support an explorer?",
+    "answer": "Yes, explorer.solana.com, solscan.io and solana.fm.",
+    "tags": ["explorer", "transparency"]
+  },
+  {
+    "id": "developer_community",
+    "question": "What is the size of your developer community?",
+    "answer": "≈ 2,856 monthly active open-source developers (Developer Report 2024).",
+    "tags": ["developers", "community", "open source"]
+  },
+  {
+    "id": "developer_programs",
+    "question": "Are there support and training programs for developers?",
+    "answer": "Yes, Encode Club, Ackee School of Solana, Turbin3, Calyptus, and Solana Foundation courses (incl. Spanish/Portuguese initiatives).",
+    "tags": ["training", "education", "developers"]
+  },
+  {
+    "id": "testnets",
+    "question": "Do you have testnets and faucets?",
+    "answer": "Yes, public devnet and testnet are available with faucets and institutional token access.",
+    "tags": ["testnet", "faucet", "development"]
+  },
+  {
+    "id": "hackathons",
+    "question": "Do you organize hackathons or events?",
+    "answer": "Yes, Solana organizes global Hacker Houses (~1 k developers each) and major hackathons (> 1 k project submissions), plus regional LatAm competitions.",
+    "tags": ["hackathon", "events", "developers"]
+  },
+  {
+    "id": "documentation",
+    "question": "How accessible is documentation for developers?",
+    "answer": "Full documentation at https://solana.com/docs — requires software engineering background to develop.",
+    "tags": ["documentation", "developer"]
+  },
+  {
+    "id": "governance",
+    "question": "What is the governance of the blockchain?",
+    "answer": "Protocol changes proposed via Solana Improvement Documents (SIMD). Validators vote on proposals and new features are added through feature gates. See https://github.com/solana-foundation/solana-improvement-documents",
+    "tags": ["governance", "simd", "validators"]
+  },
+  {
+    "id": "nonce_management",
+    "question": "How is nonce management handled?",
+    "answer": "Solana uses recent blockhash signing for fast transactions (<1 min). For longer ones, durable nonce accounts provide unique one-time nonces; see guide https://solana.com/developers/guides/advanced/introduction-to-durable-nonces.",
+    "tags": ["nonce", "transaction", "durable", "parallel"]
+  },
+  {
+    "id": "transaction_cost_time",
+    "question": "What is the average transaction cost and block confirmation time?",
+    "answer": "Median fee < $0.001 and block confirmation ≈ 1 second thanks to PoH and Turbine propagation.",
+    "tags": ["transaction", "fee", "latency", "confirmation", "tps"]
+  },
+  {
+    "id": "block_mechanism",
+    "question": "How are new blocks introduced to the network?",
+    "answer": "Through Proof-of-Stake + Proof-of-History leader rotation (~400 ms slots) and Turbine propagation for high throughput.",
+    "tags": ["block", "production", "proof of history", "turbine"]
+  },
+  {
+    "id": "security_audits",
+    "question": "Please provide the latest audit reports and security overview.",
+    "answer": "Independent audits by Halborn, OtterSec, Kudelski, Quantstamp, Trail of Bits, NCC Group cover runtime and core programs. See https://github.com/solana-labs/security-audits",
+    "tags": ["audit", "security", "solana-labs"]
+  },
+  {
+    "id": "security_mechanism",
+    "question": "What level of security does your blockchain offer vs similar protocols?",
+    "answer": "Hybrid PoS + PoH consensus with ~4,500 validators globally distributed across providers; Rust-based smart contracts ensure memory safety and limited attack surface.",
+    "tags": ["security", "pos", "poh", "validators"]
+  },
+  {
+    "id": "incident_alert_support",
+    "question": "Do you provide incident alerts and support commitments?",
+    "answer": "Yes, real-time alerts on network halts and Foundation support for incident response.",
+    "tags": ["incident", "alert", "support"]
+  },
+  {
+    "id": "legal_regulation",
+    "question": "Is provider activity regulated or licensed? Do client entities require verification?",
+    "answer": "Solana Foundation itself does not perform regulated financial activity; partner entities must comply with their jurisdiction’s licensing requirements and have internal verification policies.",
+    "tags": ["legal", "regulation", "compliance"]
+  }
+]
