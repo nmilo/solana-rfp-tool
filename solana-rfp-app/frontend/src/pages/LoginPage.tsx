@@ -105,8 +105,8 @@ const LoginPage: React.FC = () => {
                     localStorage.setItem('auth_token', mockToken);
                     localStorage.setItem('user', JSON.stringify(mockUser));
                     
-                    // Navigate to home page
-                    navigate('/');
+                    // Force page reload to trigger AuthContext update
+                    window.location.href = '/';
                   } catch (err) {
                     console.error('Login failed:', err);
                     setError('Login failed: ' + (err as Error).message);
