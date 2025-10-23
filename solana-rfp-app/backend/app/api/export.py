@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -18,8 +18,8 @@ def get_export_service() -> ExportService:
 
 @router.post("/export/pdf")
 async def export_to_pdf(
-    submission_id: str,
-    custom_filename: Optional[str] = None,
+    submission_id: str = Query(..., description="Submission ID"),
+    custom_filename: Optional[str] = Query(None, description="Custom filename"),
     db: Session = Depends(get_db),
     export_service: ExportService = Depends(get_export_service),
     current_user = Depends(get_current_user)
@@ -75,8 +75,8 @@ async def export_to_pdf(
 
 @router.post("/export/docx")
 async def export_to_docx(
-    submission_id: str,
-    custom_filename: Optional[str] = None,
+    submission_id: str = Query(..., description="Submission ID"),
+    custom_filename: Optional[str] = Query(None, description="Custom filename"),
     db: Session = Depends(get_db),
     export_service: ExportService = Depends(get_export_service),
     current_user = Depends(get_current_user)
@@ -133,7 +133,7 @@ async def export_to_docx(
 @router.post("/export/pdf/direct")
 async def export_to_pdf_direct(
     results: ProcessingResult,
-    custom_filename: Optional[str] = None,
+    custom_filename: Optional[str] = Query(None, description="Custom filename"),
     export_service: ExportService = Depends(get_export_service),
     current_user = Depends(get_current_user)
 ):
@@ -156,7 +156,7 @@ async def export_to_pdf_direct(
 @router.post("/export/docx/direct")
 async def export_to_docx_direct(
     results: ProcessingResult,
-    custom_filename: Optional[str] = None,
+    custom_filename: Optional[str] = Query(None, description="Custom filename"),
     export_service: ExportService = Depends(get_export_service),
     current_user = Depends(get_current_user)
 ):
