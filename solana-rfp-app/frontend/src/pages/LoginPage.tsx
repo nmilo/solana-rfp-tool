@@ -45,38 +45,42 @@ const LoginPage: React.FC = () => {
   }, [loginWithGoogle, navigate]);
 
   useEffect(() => {
-    // Initialize Google Sign-in
-    if (window.google?.accounts?.id) {
-      const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-      
-      if (!clientId || clientId === 'your-google-client-id.apps.googleusercontent.com') {
-        // Show error message if no client ID is configured
-        setError('Google Client ID not configured. Please set REACT_APP_GOOGLE_CLIENT_ID in your .env file.');
-        return;
-      }
+    const initializeGoogleSignIn = () => {
+      if (window.google?.accounts?.id) {
+        const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+        
+        if (!clientId || clientId === 'your-google-client-id.apps.googleusercontent.com') {
+          // Show error message if no client ID is configured
+          setError('Google Client ID not configured. Please set REACT_APP_GOOGLE_CLIENT_ID in your .env file.');
+          return;
+        }
 
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: handleGoogleResponse,
-        auto_select: false,
-        cancel_on_tap_outside: true
-      });
-
-      // Render the button
-      const buttonElement = document.getElementById('google-signin-button');
-      if (buttonElement) {
-        window.google.accounts.id.renderButton(buttonElement, {
-          theme: 'outline',
-          size: 'large',
-          width: '100%',
-          text: 'continue_with',
-          shape: 'rectangular'
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleResponse,
+          auto_select: false,
+          cancel_on_tap_outside: true
         });
+
+        // Render the button
+        const buttonElement = document.getElementById('google-signin-button');
+        if (buttonElement) {
+          window.google.accounts.id.renderButton(buttonElement, {
+            theme: 'outline',
+            size: 'large',
+            width: '100%',
+            text: 'continue_with',
+            shape: 'rectangular'
+          });
+        }
+      } else {
+        // Google script not loaded yet, retry after a short delay
+        setTimeout(initializeGoogleSignIn, 100);
       }
-    } else {
-      // Google script not loaded
-      setError('Google Sign-in script not loaded. Please check your internet connection.');
-    }
+    };
+
+    // Start initialization
+    initializeGoogleSignIn();
   }, [handleGoogleResponse]);
 
   return (
