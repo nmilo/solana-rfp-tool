@@ -50,11 +50,30 @@ async def serve_frontend():
     if os.path.exists(index_file):
         return FileResponse(index_file)
     else:
-        return {
-            "message": "Solana RFP Database API",
-            "version": "1.0.0",
-            "docs": "/docs"
-        }
+        # Return a simple HTML page if frontend is not built yet
+        return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Solana RFP Database</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                .container { max-width: 600px; margin: 0 auto; }
+                .loading { color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Solana RFP Database</h1>
+                <p class="loading">Frontend is being built... Please wait a moment and refresh the page.</p>
+                <p><a href="/docs">API Documentation</a></p>
+                <script>
+                    setTimeout(() => window.location.reload(), 5000);
+                </script>
+            </div>
+        </body>
+        </html>
+        """
 
 @app.get("/{full_path:path}")
 async def serve_frontend_catch_all(full_path: str):
@@ -68,7 +87,19 @@ async def serve_frontend_catch_all(full_path: str):
     if os.path.exists(index_file):
         return FileResponse(index_file)
     else:
-        return {"error": "Frontend not built"}
+        # Redirect to root if frontend not built
+        return """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Solana RFP Database</title>
+            <script>window.location.href = '/';</script>
+        </head>
+        <body>
+            <p>Redirecting...</p>
+        </body>
+        </html>
+        """
 
 if __name__ == "__main__":
     import uvicorn
