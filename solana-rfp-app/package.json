@@ -5,7 +5,6 @@
   "scripts": {
     "build": "cd frontend && npm run build",
     "start": "cd frontend && npm start",
-    "install": "cd frontend && npm install",
     "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "workspaces": [
