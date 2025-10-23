@@ -16,7 +16,7 @@ router = APIRouter()
 def get_export_service() -> ExportService:
     return ExportService()
 
-@router.post("/export/pdf")
+@router.post("/pdf")
 async def export_to_pdf(
     submission_id: str = Query(..., description="Submission ID"),
     custom_filename: Optional[str] = Query(None, description="Custom filename"),
@@ -73,7 +73,7 @@ async def export_to_pdf(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
 
-@router.post("/export/docx")
+@router.post("/docx")
 async def export_to_docx(
     submission_id: str = Query(..., description="Submission ID"),
     custom_filename: Optional[str] = Query(None, description="Custom filename"),
@@ -130,7 +130,7 @@ async def export_to_docx(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating DOCX: {str(e)}")
 
-@router.post("/export/pdf/direct")
+@router.post("/pdf/direct")
 async def export_to_pdf_direct(
     results: ProcessingResult,
     custom_filename: Optional[str] = Query(None, description="Custom filename"),
@@ -153,7 +153,7 @@ async def export_to_pdf_direct(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
 
-@router.post("/export/docx/direct")
+@router.post("/docx/direct")
 async def export_to_docx_direct(
     results: ProcessingResult,
     custom_filename: Optional[str] = Query(None, description="Custom filename"),
