@@ -173,6 +173,23 @@ const LoginPage: React.FC = () => {
                 >
                   Test Login (Dragan)
                 </button>
+                
+                <button
+                  onClick={async () => {
+                    try {
+                      const success = await loginWithGoogle('anyone@example.com', 'Demo User');
+                      if (success) {
+                        navigate('/');
+                      }
+                    } catch (err) {
+                      console.error('Test login failed:', err);
+                      setError('Test login failed: ' + (err as Error).message);
+                    }
+                  }}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Test Login (Any Email)
+                </button>
               </div>
               
               {/* Fallback button for testing when Google Client ID is not configured */}

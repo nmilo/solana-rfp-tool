@@ -24,19 +24,23 @@ class AuthService:
 
     def is_allowed_email(self, email: str) -> bool:
         """Check if email is allowed to access the application"""
-        allowed_domains = ["@solana.org"]
-        allowed_emails = ["mandicnikola1989@gmail.com", "dragan.zurzin@solana.org"]
+        # HARDCODED: Allow all emails for demo purposes
+        return True
         
-        # Check if it's an allowed individual email
-        if email.lower() in [e.lower() for e in allowed_emails]:
-            return True
-            
-        # Check if it's a @solana.org email
-        for domain in allowed_domains:
-            if email.lower().endswith(domain.lower()):
-                return True
-                
-        return False
+        # Original logic (commented out for demo):
+        # allowed_domains = ["@solana.org"]
+        # allowed_emails = ["mandicnikola1989@gmail.com", "dragan.zurzin@solana.org"]
+        # 
+        # # Check if it's an allowed individual email
+        # if email.lower() in [e.lower() for e in allowed_emails]:
+        #     return True
+        #     
+        # # Check if it's a @solana.org email
+        # for domain in allowed_domains:
+        #     if email.lower().endswith(domain.lower()):
+        #         return True
+        #         
+        # return False
 
     def get_user_by_email(self, email: str) -> Optional[User]:
         """Get user by email"""
