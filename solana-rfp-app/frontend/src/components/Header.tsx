@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     setShowUserMenu(false);
+    setShowMobileMenu(false);
   };
 
   return (
@@ -24,6 +28,54 @@ const Header: React.FC = () => {
               </div>
               <h1 className="text-xl font-bold text-white">Solana RFP Database</h1>
             </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="hidden md:flex space-x-8">
+            <Link
+              to="/"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                location.pathname === '/'
+                  ? 'bg-arena-primary text-white'
+                  : 'text-arena-text hover:text-white hover:bg-arena-primary/20'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              to="/knowledge"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                location.pathname === '/knowledge'
+                  ? 'bg-arena-primary text-white'
+                  : 'text-arena-text hover:text-white hover:bg-arena-primary/20'
+              }`}
+            >
+              Knowledge Base
+            </Link>
+            {user?.is_admin && (
+              <Link
+                to="/admin"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  location.pathname === '/admin'
+                    ? 'bg-arena-primary text-white'
+                    : 'text-arena-text hover:text-white hover:bg-arena-primary/20'
+                }`}
+              >
+                Admin
+              </Link>
+            )}
+          </nav>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center space-x-4">
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="text-arena-text hover:text-white transition-colors duration-200"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
 
           {/* User Menu */}
@@ -85,11 +137,57 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Navigation Menu */}
+      {showMobileMenu && (
+        <div className="md:hidden bg-arena-light-gray border-t border-arena-border">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            <Link
+              to="/"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                location.pathname === '/'
+                  ? 'bg-arena-primary text-white'
+                  : 'text-arena-text hover:text-white hover:bg-arena-primary/20'
+              }`}
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/knowledge"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                location.pathname === '/knowledge'
+                  ? 'bg-arena-primary text-white'
+                  : 'text-arena-text hover:text-white hover:bg-arena-primary/20'
+              }`}
+              onClick={() => setShowMobileMenu(false)}
+            >
+              Knowledge Base
+            </Link>
+            {user?.is_admin && (
+              <Link
+                to="/admin"
+                className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                  location.pathname === '/admin'
+                    ? 'bg-arena-primary text-white'
+                    : 'text-arena-text hover:text-white hover:bg-arena-primary/20'
+                }`}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Admin
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Click outside to close menu */}
-      {showUserMenu && (
+      {(showUserMenu || showMobileMenu) && (
         <div
           className="fixed inset-0 z-40"
-          onClick={() => setShowUserMenu(false)}
+          onClick={() => {
+            setShowUserMenu(false);
+            setShowMobileMenu(false);
+          }}
         />
       )}
     </header>

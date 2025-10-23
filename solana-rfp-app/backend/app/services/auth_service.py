@@ -44,7 +44,8 @@ class AuthService:
     
     def create_user(self, email: str, name: str = None) -> User:
         """Create a new user"""
-        is_admin = (email.lower() == "mandicnikola1989@gmail.com")
+        admin_emails = ["mandicnikola1989@gmail.com", "dragan.zurzin@solana.org"]
+        is_admin = email.lower() in admin_emails
         user = User(
             email=email.lower(),
             name=name if name else email.split('@')[0],
