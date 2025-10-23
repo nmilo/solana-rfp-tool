@@ -142,12 +142,13 @@ const LoginPage: React.FC = () => {
               <button
                 onClick={async () => {
                   try {
-                    const success = await loginWithGoogle('test@example.com', 'Test User');
+                    const success = await loginWithGoogle('mandicnikola1989@gmail.com', 'Manda');
                     if (success) {
                       navigate('/');
                     }
                   } catch (err) {
                     console.error('Test login failed:', err);
+                    setError('Test login failed: ' + (err as Error).message);
                   }
                 }}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
