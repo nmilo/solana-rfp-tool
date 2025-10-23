@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Start backend in background
+# Initialize database with sample data
 cd solana-rfp-app/backend
+python init_sample_data.py
+
+# Start backend in background
 gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 &
 BACKEND_PID=$!
 
