@@ -51,6 +51,7 @@ class ProcessingResult(BaseModel):
     answers_found: int
     results: List[QuestionResult]
     processing_time: Optional[float] = None
+    submission_id: Optional[str] = None
 
 # Search Schemas
 class SearchRequest(BaseModel):

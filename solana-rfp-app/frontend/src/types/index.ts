@@ -23,6 +23,7 @@ export interface ProcessingResult {
   answers_found: number;
   results: QuestionResult[];
   processing_time?: number;
+  submission_id?: string;
 }
 
 export interface SearchResult {
