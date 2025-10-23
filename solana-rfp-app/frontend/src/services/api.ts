@@ -53,6 +53,28 @@ export const apiService = {
     return response.data;
   },
 
+  async uploadDocument(file: File, category?: string, tags?: string): Promise<{
+    message: string;
+    filename: string;
+    extracted_questions: number;
+    added_entries: number;
+    skipped_entries: number;
+    added_questions: string[];
+    skipped_questions: string[];
+  }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (category) formData.append('category', category);
+    if (tags) formData.append('tags', tags);
+    
+    const response = await api.post('/api/v1/knowledge/upload-document', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
   // Question Processing
   async processTextQuestions(text: string): Promise<ProcessingResult> {
     const response = await api.post('/api/v1/questions/process-text', { text });

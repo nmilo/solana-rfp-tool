@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import { KnowledgeBaseEntry, SearchResponse } from '../types';
+import { DocumentUpload } from '../components/DocumentUpload';
 
 export const KnowledgeBasePage: React.FC = () => {
   const [entries, setEntries] = useState<KnowledgeBaseEntry[]>([]);
@@ -9,6 +10,7 @@ export const KnowledgeBasePage: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [categories, setCategories] = useState<string[]>([]);
+  const [showUpload, setShowUpload] = useState(false);
 
   useEffect(() => {
     loadEntries();
@@ -46,6 +48,11 @@ export const KnowledgeBasePage: React.FC = () => {
     setSearchResults(null);
   };
 
+  const handleUploadSuccess = () => {
+    // Reload entries after successful upload
+    loadEntries();
+  };
+
   const displayEntries = searchResults ? searchResults.matches : entries;
 
   return (
@@ -53,13 +60,28 @@ export const KnowledgeBasePage: React.FC = () => {
       <div className="max-w-6xl mx-auto p-6">
         <div className="arena-card rounded-xl p-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-arena-text mb-4 glow-text">
-              Knowledge Base
-            </h1>
-            <p className="text-arena-text-muted">
-              Browse and search through our curated RFP knowledge base
-            </p>
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h1 className="text-3xl font-bold text-arena-text mb-2 glow-text">
+                  Knowledge Base
+                </h1>
+                <p className="text-arena-text-muted">
+                  Browse and search through our curated RFP knowledge base
+                </p>
+              </div>
+              <button
+                onClick={() => setShowUpload(!showUpload)}
+                className="arena-button px-6 py-3 rounded-lg font-medium"
+              >
+                {showUpload ? 'Hide Upload' : 'Upload Document'}
+              </button>
+            </div>
           </div>
+
+          {/* Document Upload Section */}
+          {showUpload && (
+            <DocumentUpload onUploadSuccess={handleUploadSuccess} />
+          )}
 
           {/* Search */}
           <div className="mb-8">
