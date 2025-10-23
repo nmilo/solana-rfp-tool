@@ -25,8 +25,11 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (file: File) => {
-    if (!file.name.toLowerCase().endsWith('.pdf')) {
-      setError('Please select a PDF file');
+    const fileExtension = file.name.toLowerCase().split('.').pop();
+    const supportedFormats = ['pdf', 'docx', 'doc', 'xlsx', 'xls'];
+    
+    if (!fileExtension || !supportedFormats.includes(fileExtension)) {
+      setError('Please select a supported file format (PDF, DOCX, DOC, XLSX, XLS)');
       return;
     }
     
@@ -97,7 +100,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
           Upload Document to Knowledge Base
         </h3>
         <p className="text-arena-text-muted">
-          Upload a PDF document to automatically extract questions and add them to the knowledge base.
+          Upload a document (PDF, Word, Excel) to automatically extract questions and add them to the knowledge base.
         </p>
       </div>
 
@@ -128,17 +131,17 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
             />
           </svg>
           <p className="text-arena-text-muted mb-2">
-            Drag and drop a PDF file here, or click to select
+            Drag and drop a document here, or click to select
           </p>
           <p className="text-sm text-arena-text-muted">
-            Only PDF files are supported
+            Supported formats: PDF, DOCX, DOC, XLSX, XLS
           </p>
         </div>
         
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf"
+          accept=".pdf,.docx,.doc,.xlsx,.xls"
           onChange={handleFileInputChange}
           className="hidden"
         />
@@ -148,7 +151,7 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
           disabled={isUploading}
           className="arena-button px-6 py-3 rounded-lg font-medium disabled:opacity-50"
         >
-          {isUploading ? 'Uploading...' : 'Select PDF File'}
+          {isUploading ? 'Uploading...' : 'Select Document'}
         </button>
       </div>
 

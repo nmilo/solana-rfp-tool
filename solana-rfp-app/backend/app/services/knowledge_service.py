@@ -86,11 +86,13 @@ class KnowledgeBaseService:
         if existing:
             raise ValueError("Similar question already exists in knowledge base")
         
-        # Add to database
+        # Add to database with all required fields
         kb_entry = KnowledgeBase(
             question=entry_data.question,
             answer=entry_data.answer,
             category=entry_data.category,
+            confidence_threshold=0.1,  # Default confidence threshold
+            is_active=True,  # Default to active
             created_by=created_by,
             last_modified_by=created_by
         )
@@ -106,8 +108,14 @@ class KnowledgeBaseService:
             "id": kb_entry.id,
             "question": kb_entry.question,
             "answer": kb_entry.answer,
-            "tags": kb_entry.tags,
-            "category": kb_entry.category
+            "tags": kb_entry.get_tags(),
+            "category": kb_entry.category,
+            "confidence_threshold": kb_entry.confidence_threshold,
+            "is_active": kb_entry.is_active,
+            "created_at": kb_entry.created_at.isoformat(),
+            "updated_at": kb_entry.updated_at.isoformat(),
+            "created_by": kb_entry.created_by,
+            "last_modified_by": kb_entry.last_modified_by
         }
     
     def update_entry(self, entry_id: str, update_data: KnowledgeBaseUpdate, modified_by: str = "admin") -> Dict:
@@ -202,6 +210,8 @@ class KnowledgeBaseService:
                     question=item.get("question", ""),
                     answer=item.get("answer", ""),
                     category=item.get("category"),
+                    confidence_threshold=0.1,  # Default confidence threshold
+                    is_active=True,  # Default to active
                     created_by=created_by,
                     last_modified_by=created_by
                 )

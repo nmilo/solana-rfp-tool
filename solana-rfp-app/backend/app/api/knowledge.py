@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.core.database import get_db
 from app.services.knowledge_service import KnowledgeBaseService
-from app.services.pdf_service import PDFService
+from app.services.document_service import DocumentService
 from app.models.schemas import (
     KnowledgeBaseCreate, 
     KnowledgeBaseUpdate, 
@@ -18,8 +18,8 @@ router = APIRouter()
 def get_kb_service(db: Session = Depends(get_db)) -> KnowledgeBaseService:
     return KnowledgeBaseService(db)
 
-def get_pdf_service() -> PDFService:
-    return PDFService()
+def get_document_service() -> DocumentService:
+    return DocumentService()
 
 @router.get("/entries", response_model=List[KnowledgeBaseResponse])
 async def get_all_entries(
@@ -98,7 +98,7 @@ async def upload_document(
     category: Optional[str] = Form(None),
     tags: Optional[str] = Form(None),
     kb_service: KnowledgeBaseService = Depends(get_kb_service),
-    pdf_service: PDFService = Depends(get_pdf_service),
+    document_service: DocumentService = Depends(get_document_service),
     current_user = Depends(get_current_user)
 ):
     """Upload and process a document to add to knowledge base"""
@@ -106,25 +106,27 @@ async def upload_document(
         raise HTTPException(status_code=400, detail="No file provided")
     
     # Check file type
-    if not file.filename.lower().endswith('.pdf'):
-        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+    file_extension = file.filename.lower().split('.')[-1]
+    supported_formats = ['pdf', 'docx', 'doc', 'xlsx', 'xls']
+    if file_extension not in supported_formats:
+        raise HTTPException(status_code=400, detail=f"Unsupported file format. Supported formats: {', '.join(supported_formats)}")
     
     try:
         # Read file content
         file_content = await file.read()
         
-        # Extract text from PDF
-        text = await pdf_service.extract_text_from_pdf(file_content)
+        # Extract text from document
+        text = await document_service.extract_text_from_file(file_content, file.filename)
         
         if not text.strip():
-            raise HTTPException(status_code=400, detail="No text could be extracted from the PDF")
+            raise HTTPException(status_code=400, detail=f"No text could be extracted from the {file_extension.upper()} file")
         
         # Extract questions from text
         try:
-            questions = await pdf_service.extract_questions_from_text(text)
+            questions = await document_service.extract_questions_from_text(text)
         except ValueError:
             # Fallback to simple extraction
-            questions = pdf_service.extract_questions_simple(text)
+            questions = document_service.extract_questions_simple(text)
         
         if not questions:
             raise HTTPException(status_code=400, detail="No questions could be extracted from the document")
