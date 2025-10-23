@@ -135,7 +135,8 @@ async def process_text_questions(
         questions_processed=len(questions),
         answers_found=len([r for r in results if r.confidence > 0]),
         results=results,
-        processing_time=time.time() - start_time
+        processing_time=time.time() - start_time,
+        submission_id=submission.id
     )
 
 @router.post("/process-pdf", response_model=ProcessingResult)

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import knowledge, questions, auth
+from app.api import knowledge, questions, auth, export
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -28,6 +28,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])
 app.include_router(knowledge.router, prefix="/api/v1/knowledge", tags=["knowledge"])
 app.include_router(questions.router, prefix="/api/v1/questions", tags=["questions"])
+app.include_router(export.router, prefix="/api/v1/export", tags=["export"])
 
 @app.get("/")
 async def root():
