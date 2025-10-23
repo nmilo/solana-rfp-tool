@@ -49,8 +49,14 @@ const LoginPage: React.FC = () => {
     const maxRetries = 50; // 5 seconds max wait time
 
     const initializeGoogleSignIn = () => {
+      console.log('Initializing Google Sign-in, retry count:', retryCount);
+      console.log('window.google:', window.google);
+      console.log('window.google?.accounts:', window.google?.accounts);
+      console.log('window.google?.accounts?.id:', window.google?.accounts?.id);
+      
       if (window.google?.accounts?.id) {
         const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+        console.log('Client ID:', clientId);
         
         if (!clientId || clientId === 'your-google-client-id.apps.googleusercontent.com') {
           // Show error message if no client ID is configured
@@ -131,6 +137,23 @@ const LoginPage: React.FC = () => {
             {/* Google Sign-in Button */}
             <div className="space-y-4">
               <div id="google-signin-button" className="w-full"></div>
+              
+              {/* Temporary bypass button for testing */}
+              <button
+                onClick={async () => {
+                  try {
+                    const success = await loginWithGoogle('test@example.com', 'Test User');
+                    if (success) {
+                      navigate('/');
+                    }
+                  } catch (err) {
+                    console.error('Test login failed:', err);
+                  }
+                }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              >
+                Test Login (Bypass Google)
+              </button>
               
               {/* Fallback button for testing when Google Client ID is not configured */}
               {(!process.env.REACT_APP_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID === 'your-google-client-id.apps.googleusercontent.com') && (
