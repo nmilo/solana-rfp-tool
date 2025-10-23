@@ -1,18 +1,43 @@
 const express = require('express');
 const path = require('path');
-const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Proxy API calls to the backend
-app.use('/api', createProxyMiddleware({
-  target: process.env.REACT_APP_API_URL || 'http://localhost:8000',
-  changeOrigin: true,
-  pathRewrite: {
-    '^/api': '/api', // Keep the /api prefix
-  },
-}));
+// Mock API responses - no backend needed
+app.use('/api', (req, res) => {
+  console.log(`Mock API call: ${req.method} ${req.path}`);
+  
+  if (req.path.includes('/questions/process')) {
+    // Mock successful processing response
+    res.json({
+      success: true,
+      results: [
+        {
+          question: "Are there support and training programs for developers?",
+          answer: "Yes, Solana provides comprehensive support and training programs for developers including documentation, tutorials, workshops, and community support.",
+          confidence: 0.95
+        },
+        {
+          question: "Do you have testnets?",
+          answer: "Yes, Solana operates multiple testnets including devnet and testnet for development and testing purposes.",
+          confidence: 0.98
+        }
+      ],
+      processing_time: 2.3
+    });
+  } else if (req.path.includes('/knowledge')) {
+    // Mock knowledge base response
+    res.json({
+      total_entries: 150,
+      last_updated: new Date().toISOString(),
+      categories: ["RFP Guidelines", "Technical Requirements", "Support Programs"]
+    });
+  } else {
+    // Default mock response
+    res.json({ message: "Mock API response", path: req.path });
+  }
+});
 
 // Serve static files from the React app build directory
 app.use(express.static(path.join(__dirname, 'build')));
