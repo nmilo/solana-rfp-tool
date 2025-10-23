@@ -1,8 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
-import os
 from app.core.config import settings
 from app.core.database import engine, Base
 from app.api import knowledge, questions, auth, export
@@ -40,66 +37,19 @@ async def health_check():
     return {"status": "healthy", "service": "solana-rfp-api"}
 
 @app.get("/")
-async def serve_frontend():
-    """Serve a simple API interface"""
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Solana RFP Database API</title>
-        <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
-            .container { background: #f5f5f5; padding: 30px; border-radius: 10px; }
-            h1 { color: #333; }
-            .api-link { display: inline-block; margin: 10px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
-            .api-link:hover { background: #0056b3; }
-            .status { color: green; font-weight: bold; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>🚀 Solana RFP Database API</h1>
-            <p class="status">✅ Backend is running successfully!</p>
-            <p>Your API is ready to use. Here are the available endpoints:</p>
-            
-            <h3>API Endpoints:</h3>
-            <a href="/docs" class="api-link">📚 API Documentation</a>
-            <a href="/health" class="api-link">❤️ Health Check</a>
-            <a href="/api/v1/auth/verify-email/demo@solana.org" class="api-link">🔐 Test Auth</a>
-            
-            <h3>Quick Test:</h3>
-            <p>Try this API call to test the system:</p>
-            <code>POST /api/v1/questions/process</code>
-            
-            <h3>Next Steps:</h3>
-            <p>1. The backend API is fully functional</p>
-            <p>2. You can test all endpoints via the documentation</p>
-            <p>3. Frontend can be deployed separately if needed</p>
-        </div>
-    </body>
-    </html>
-    """
+async def root():
+    return {
+        "message": "Solana RFP Database API",
+        "version": "1.0.0",
+        "docs": "/docs",
+        "health": "/health",
+        "status": "Backend API is running"
+    }
 
 @app.get("/{full_path:path}")
-async def serve_frontend_catch_all(full_path: str):
-    """Catch-all route - redirect to API docs for unknown paths"""
-    # Don't serve frontend for API routes
-    if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc"):
-        return {"error": "Not found"}
-    
-    # Redirect to root for any other path
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Solana RFP Database</title>
-        <script>window.location.href = '/';</script>
-    </head>
-    <body>
-        <p>Redirecting to API...</p>
-    </body>
-    </html>
-    """
+async def catch_all(full_path: str):
+    """Catch-all route for unknown paths"""
+    return {"error": "Not found", "path": full_path, "message": "This is a backend API only"}
 
 if __name__ == "__main__":
     import uvicorn
