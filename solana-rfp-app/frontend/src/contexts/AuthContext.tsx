@@ -54,6 +54,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const verifyToken = async (token: string) => {
     try {
+      // Check if it's a mock token
+      if (token.startsWith('mock-jwt-token-')) {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const userData = JSON.parse(storedUser);
+          setUser(userData);
+          setToken(token);
+          setIsLoading(false);
+          return;
+        }
+      }
+      
+      // Try to verify with backend
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -68,12 +81,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         // Token is invalid, remove it
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
         setToken(null);
         setUser(null);
       }
     } catch (error) {
       console.error('Token verification failed:', error);
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
       setToken(null);
       setUser(null);
     } finally {

@@ -92,11 +92,21 @@ const LoginPage: React.FC = () => {
                     setIsLoading(true);
                     setError('');
                     
-                    // Direct login without Google OAuth
-                    const success = await loginWithGoogle('demo@solana.org', 'Demo User');
-                    if (success) {
-                      navigate('/');
-                    }
+                    // Mock login - bypass backend entirely
+                    const mockUser = {
+                      email: 'demo@solana.org',
+                      name: 'Demo User',
+                      is_admin: true
+                    };
+                    
+                    const mockToken = 'mock-jwt-token-' + Date.now();
+                    
+                    // Set user and token in localStorage
+                    localStorage.setItem('auth_token', mockToken);
+                    localStorage.setItem('user', JSON.stringify(mockUser));
+                    
+                    // Navigate to home page
+                    navigate('/');
                   } catch (err) {
                     console.error('Login failed:', err);
                     setError('Login failed: ' + (err as Error).message);
