@@ -135,6 +135,16 @@ class DocumentService:
             return False
         
         def split_on_question_marks(s: str):
+            # Don't split compound questions - treat the whole text as one question if it contains question marks
+            s = s.strip()
+            if not s:
+                return []
+            
+            # If it's a single line with multiple question marks, treat as one compound question
+            if '\n' not in s and s.count('?') > 1:
+                return [s]
+            
+            # Otherwise, split on question marks as before
             parts = re.split(r"(\?)", s)
             out, acc = [], ""
             for seg in parts:
