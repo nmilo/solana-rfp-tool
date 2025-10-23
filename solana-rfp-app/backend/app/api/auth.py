@@ -87,7 +87,7 @@ async def google_login(
         if not auth_service.is_allowed_email(email):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Email domain not allowed. Only @solana.org emails and mandicnikola1989@gmail.com are permitted."
+                detail="Email domain not allowed. Only @solana.org emails, mandicnikola1989@gmail.com, and dragan.zurzin@solana.org are permitted."
             )
         
         # Get or create user

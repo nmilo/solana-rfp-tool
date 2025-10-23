@@ -138,23 +138,42 @@ const LoginPage: React.FC = () => {
             <div className="space-y-4">
               <div id="google-signin-button" className="w-full"></div>
               
-              {/* Temporary bypass button for testing */}
-              <button
-                onClick={async () => {
-                  try {
-                    const success = await loginWithGoogle('mandicnikola1989@gmail.com', 'Manda');
-                    if (success) {
-                      navigate('/');
+              {/* Temporary bypass buttons for testing */}
+              <div className="space-y-2">
+                <button
+                  onClick={async () => {
+                    try {
+                      const success = await loginWithGoogle('mandicnikola1989@gmail.com', 'Manda');
+                      if (success) {
+                        navigate('/');
+                      }
+                    } catch (err) {
+                      console.error('Test login failed:', err);
+                      setError('Test login failed: ' + (err as Error).message);
                     }
-                  } catch (err) {
-                    console.error('Test login failed:', err);
-                    setError('Test login failed: ' + (err as Error).message);
-                  }
-                }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Test Login (Bypass Google)
-              </button>
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Test Login (Manda)
+                </button>
+                
+                <button
+                  onClick={async () => {
+                    try {
+                      const success = await loginWithGoogle('dragan.zurzin@solana.org', 'Dragan');
+                      if (success) {
+                        navigate('/');
+                      }
+                    } catch (err) {
+                      console.error('Test login failed:', err);
+                      setError('Test login failed: ' + (err as Error).message);
+                    }
+                  }}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+                >
+                  Test Login (Dragan)
+                </button>
+              </div>
               
               {/* Fallback button for testing when Google Client ID is not configured */}
               {(!process.env.REACT_APP_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID === 'your-google-client-id.apps.googleusercontent.com') && (
