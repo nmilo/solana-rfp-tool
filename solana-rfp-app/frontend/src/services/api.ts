@@ -100,6 +100,47 @@ export const apiService = {
     return response.data;
   },
 
+  // Export functionality
+  async exportToPDF(submissionId: string, customFilename?: string): Promise<Blob> {
+    const params = new URLSearchParams();
+    if (customFilename) params.append('custom_filename', customFilename);
+    
+    const response = await api.post(`/api/v1/export/pdf?submission_id=${submissionId}&${params.toString()}`, {}, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  async exportToDOCX(submissionId: string, customFilename?: string): Promise<Blob> {
+    const params = new URLSearchParams();
+    if (customFilename) params.append('custom_filename', customFilename);
+    
+    const response = await api.post(`/api/v1/export/docx?submission_id=${submissionId}&${params.toString()}`, {}, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  async exportToPDFDirect(results: ProcessingResult, customFilename?: string): Promise<Blob> {
+    const params = new URLSearchParams();
+    if (customFilename) params.append('custom_filename', customFilename);
+    
+    const response = await api.post(`/api/v1/export/pdf/direct?${params.toString()}`, results, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  async exportToDOCXDirect(results: ProcessingResult, customFilename?: string): Promise<Blob> {
+    const params = new URLSearchParams();
+    if (customFilename) params.append('custom_filename', customFilename);
+    
+    const response = await api.post(`/api/v1/export/docx/direct?${params.toString()}`, results, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
   // Health check
   async healthCheck(): Promise<{ status: string; service: string }> {
     const response = await api.get('/health');
