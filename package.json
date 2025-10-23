@@ -30,7 +30,7 @@
     "build": "cd solana-rfp-app/frontend && npm run build",
     "test": "cd solana-rfp-app/frontend && npm test",
     "eject": "cd solana-rfp-app/frontend && npm run eject",
-    "heroku-postbuild": "cd solana-rfp-app/frontend && npm install && npm run build",
+    "heroku-postbuild": "cd solana-rfp-app/frontend && npm ci && npm run build",
     "server": "cd solana-rfp-app/frontend && node server.js"
   },
   "engines": {
