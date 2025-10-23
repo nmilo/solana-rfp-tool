@@ -125,24 +125,13 @@ export const AnswerDisplay: React.FC<AnswerDisplayProps> = ({ results }) => {
           ) : (
             results.results.map((result, index) => (
               <div key={index} className="arena-card p-6 rounded-lg">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h4 className="text-lg font-medium text-arena-text mb-2">
-                      Question {index + 1}
-                    </h4>
-                    <p className="text-arena-text-muted bg-arena-light-gray/30 p-3 rounded-lg">
-                      {result.question}
-                    </p>
-                  </div>
-                  
-                  <div className="ml-4 text-right">
-                    <div className={`text-sm font-medium ${getConfidenceColor(result.confidence)}`}>
-                      {getConfidenceLabel(result.confidence)}
-                    </div>
-                    <div className="text-xs text-arena-text-muted">
-                      {Math.round(result.confidence * 100)}% match
-                    </div>
-                  </div>
+                <div className="mb-4">
+                  <h4 className="text-lg font-medium text-arena-text mb-2">
+                    Question {index + 1}
+                  </h4>
+                  <p className="text-arena-text-muted bg-arena-light-gray/30 p-3 rounded-lg">
+                    {result.question}
+                  </p>
                 </div>
 
                 <div>
