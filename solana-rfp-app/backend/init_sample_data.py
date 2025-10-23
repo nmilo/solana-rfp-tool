@@ -11,13 +11,26 @@ from app.models.database import KnowledgeBase
 def init_sample_data():
     """Initialize database with sample RFP data"""
     
+    print("Initializing database...")
+    print(f"Database URL: {os.getenv('DATABASE_URL', 'Not set')}")
+    
     # Create tables
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("Database tables created successfully")
+    except Exception as e:
+        print(f"Error creating database tables: {e}")
+        return
     
     db = SessionLocal()
     try:
+        # Test database connection
+        db.execute("SELECT 1")
+        print("Database connection successful")
+        
         # Check if data already exists
         existing_count = db.query(KnowledgeBase).count()
+        print(f"Existing entries in database: {existing_count}")
         if existing_count > 0:
             print(f"Database already has {existing_count} entries. Skipping initialization.")
             return
