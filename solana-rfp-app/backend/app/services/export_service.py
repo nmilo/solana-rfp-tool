@@ -103,7 +103,7 @@ class ExportService:
             story.append(question)
             
             # Answer
-            if result.answer and result.answer != "No answer found in knowledge base":
+            if result.answer and result.answer.strip() and result.answer != "No answer found in knowledge base":
                 answer_text = result.answer
                 answer = Paragraph(answer_text, self.styles['Answer'])
             else:
@@ -151,7 +151,7 @@ class ExportService:
             
             # Answer
             answer_heading = doc.add_heading('Answer', level=3)
-            if result.answer and result.answer != "No answer found in knowledge base":
+            if result.answer and result.answer.strip() and result.answer != "No answer found in knowledge base":
                 answer_para = doc.add_paragraph(result.answer)
             else:
                 answer_para = doc.add_paragraph()
