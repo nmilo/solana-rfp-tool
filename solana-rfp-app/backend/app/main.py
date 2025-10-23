@@ -8,12 +8,7 @@ from app.core.database import engine, Base
 from app.api import knowledge, questions, auth, export
 
 # Create database tables
-try:
-    Base.metadata.create_all(bind=engine)
-    print("Database tables created successfully")
-except Exception as e:
-    print(f"Error creating database tables: {e}")
-    # Continue anyway - tables might already exist
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -49,62 +44,65 @@ async def health_check():
 
 @app.get("/")
 async def serve_frontend():
-    """Serve the React frontend"""
-    frontend_build_path = os.path.join(os.path.dirname(__file__), "../../../frontend/build")
-    index_file = os.path.join(frontend_build_path, "index.html")
-    if os.path.exists(index_file):
-        return FileResponse(index_file)
-    else:
-        # Return a simple HTML page if frontend is not built yet
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Solana RFP Database</title>
-            <style>
-                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-                .container { max-width: 600px; margin: 0 auto; }
-                .loading { color: #666; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>Solana RFP Database</h1>
-                <p class="loading">Frontend is being built... Please wait a moment and refresh the page.</p>
-                <p><a href="/docs">API Documentation</a></p>
-                <script>
-                    setTimeout(() => window.location.reload(), 5000);
-                </script>
-            </div>
-        </body>
-        </html>
-        """
+    """Serve a simple API interface"""
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Solana RFP Database API</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+            .container { background: #f5f5f5; padding: 30px; border-radius: 10px; }
+            h1 { color: #333; }
+            .api-link { display: inline-block; margin: 10px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+            .api-link:hover { background: #0056b3; }
+            .status { color: green; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 Solana RFP Database API</h1>
+            <p class="status">✅ Backend is running successfully!</p>
+            <p>Your API is ready to use. Here are the available endpoints:</p>
+            
+            <h3>API Endpoints:</h3>
+            <a href="/docs" class="api-link">📚 API Documentation</a>
+            <a href="/health" class="api-link">❤️ Health Check</a>
+            <a href="/api/v1/auth/verify-email/demo@solana.org" class="api-link">🔐 Test Auth</a>
+            
+            <h3>Quick Test:</h3>
+            <p>Try this API call to test the system:</p>
+            <code>POST /api/v1/questions/process</code>
+            
+            <h3>Next Steps:</h3>
+            <p>1. The backend API is fully functional</p>
+            <p>2. You can test all endpoints via the documentation</p>
+            <p>3. Frontend can be deployed separately if needed</p>
+        </div>
+    </body>
+    </html>
+    """
 
 @app.get("/{full_path:path}")
 async def serve_frontend_catch_all(full_path: str):
-    """Catch-all route to serve React frontend for client-side routing"""
+    """Catch-all route - redirect to API docs for unknown paths"""
     # Don't serve frontend for API routes
     if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc"):
         return {"error": "Not found"}
     
-    frontend_build_path = os.path.join(os.path.dirname(__file__), "../../../frontend/build")
-    index_file = os.path.join(frontend_build_path, "index.html")
-    if os.path.exists(index_file):
-        return FileResponse(index_file)
-    else:
-        # Redirect to root if frontend not built
-        return """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Solana RFP Database</title>
-            <script>window.location.href = '/';</script>
-        </head>
-        <body>
-            <p>Redirecting...</p>
-        </body>
-        </html>
-        """
+    # Redirect to root for any other path
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Solana RFP Database</title>
+        <script>window.location.href = '/';</script>
+    </head>
+    <body>
+        <p>Redirecting to API...</p>
+    </body>
+    </html>
+    """
 
 if __name__ == "__main__":
     import uvicorn
