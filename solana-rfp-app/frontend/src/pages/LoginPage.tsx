@@ -44,57 +44,7 @@ const LoginPage: React.FC = () => {
     }
   }, [loginWithGoogle, navigate]);
 
-  useEffect(() => {
-    let retryCount = 0;
-    const maxRetries = 50; // 5 seconds max wait time
-
-    const initializeGoogleSignIn = () => {
-      console.log('Initializing Google Sign-in, retry count:', retryCount);
-      console.log('window.google:', window.google);
-      console.log('window.google?.accounts:', window.google?.accounts);
-      console.log('window.google?.accounts?.id:', window.google?.accounts?.id);
-      
-      if (window.google?.accounts?.id) {
-        const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-        console.log('Client ID:', clientId);
-        
-        if (!clientId || clientId === 'your-google-client-id.apps.googleusercontent.com') {
-          // Show error message if no client ID is configured
-          setError('Google Client ID not configured. Please set REACT_APP_GOOGLE_CLIENT_ID in your .env file.');
-          return;
-        }
-
-        window.google.accounts.id.initialize({
-          client_id: clientId,
-          callback: handleGoogleResponse,
-          auto_select: false,
-          cancel_on_tap_outside: true
-        });
-
-        // Render the button
-        const buttonElement = document.getElementById('google-signin-button');
-        if (buttonElement) {
-          window.google.accounts.id.renderButton(buttonElement, {
-            theme: 'outline',
-            size: 'large',
-            width: '100%',
-            text: 'continue_with',
-            shape: 'rectangular'
-          });
-        }
-      } else if (retryCount < maxRetries) {
-        // Google script not loaded yet, retry after a short delay
-        retryCount++;
-        setTimeout(initializeGoogleSignIn, 100);
-      } else {
-        // Max retries reached, show error
-        setError('Google Sign-in script not loaded. Please check your internet connection.');
-      }
-    };
-
-    // Start initialization
-    initializeGoogleSignIn();
-  }, [handleGoogleResponse]);
+  // Removed Google OAuth initialization - using simple login instead
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-arena-dark to-arena-darker flex items-center justify-center px-4">
@@ -134,63 +84,41 @@ const LoginPage: React.FC = () => {
               </div>
             )}
 
-            {/* Google Sign-in Button */}
+            {/* Simple Login Button */}
             <div className="space-y-4">
-              <div id="google-signin-button" className="w-full"></div>
-              
-              {/* Temporary bypass buttons for testing */}
-              <div className="space-y-2">
-                <button
-                  onClick={async () => {
-                    try {
-                      const success = await loginWithGoogle('mandicnikola1989@gmail.com', 'Manda');
-                      if (success) {
-                        navigate('/');
-                      }
-                    } catch (err) {
-                      console.error('Test login failed:', err);
-                      setError('Test login failed: ' + (err as Error).message);
+              <button
+                onClick={async () => {
+                  try {
+                    setIsLoading(true);
+                    setError('');
+                    
+                    // Direct login without Google OAuth
+                    const success = await loginWithGoogle('demo@solana.org', 'Demo User');
+                    if (success) {
+                      navigate('/');
                     }
-                  }}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Test Login (Manda)
-                </button>
-                
-                <button
-                  onClick={async () => {
-                    try {
-                      const success = await loginWithGoogle('dragan.zurzin@solana.org', 'Dragan');
-                      if (success) {
-                        navigate('/');
-                      }
-                    } catch (err) {
-                      console.error('Test login failed:', err);
-                      setError('Test login failed: ' + (err as Error).message);
-                    }
-                  }}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Test Login (Dragan)
-                </button>
-                
-                <button
-                  onClick={async () => {
-                    try {
-                      const success = await loginWithGoogle('anyone@example.com', 'Demo User');
-                      if (success) {
-                        navigate('/');
-                      }
-                    } catch (err) {
-                      console.error('Test login failed:', err);
-                      setError('Test login failed: ' + (err as Error).message);
-                    }
-                  }}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Test Login (Any Email)
-                </button>
-              </div>
+                  } catch (err) {
+                    console.error('Login failed:', err);
+                    setError('Login failed: ' + (err as Error).message);
+                  } finally {
+                    setIsLoading(false);
+                  }
+                }}
+                disabled={isLoading}
+                className="w-full bg-arena-primary hover:bg-arena-primary/90 disabled:bg-arena-primary/50 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Logging in...
+                  </>
+                ) : (
+                  'Login to the App'
+                )}
+              </button>
               
               {/* Fallback button for testing when Google Client ID is not configured */}
               {(!process.env.REACT_APP_GOOGLE_CLIENT_ID || process.env.REACT_APP_GOOGLE_CLIENT_ID === 'your-google-client-id.apps.googleusercontent.com') && (
