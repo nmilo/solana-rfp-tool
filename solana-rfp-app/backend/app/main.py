@@ -33,10 +33,7 @@ app.include_router(knowledge.router, prefix="/api/v1/knowledge", tags=["knowledg
 app.include_router(questions.router, prefix="/api/v1/questions", tags=["questions"])
 app.include_router(export.router, prefix="/api/v1/export", tags=["export"])
 
-# Serve static files from frontend build
-frontend_build_path = os.path.join(os.path.dirname(__file__), "../../../frontend/build")
-if os.path.exists(frontend_build_path):
-    app.mount("/static", StaticFiles(directory=os.path.join(frontend_build_path, "static")), name="static")
+# Backend-only: No frontend static files
 
 @app.get("/health")
 async def health_check():
