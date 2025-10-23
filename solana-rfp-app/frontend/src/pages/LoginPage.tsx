@@ -45,6 +45,9 @@ const LoginPage: React.FC = () => {
   }, [loginWithGoogle, navigate]);
 
   useEffect(() => {
+    let retryCount = 0;
+    const maxRetries = 50; // 5 seconds max wait time
+
     const initializeGoogleSignIn = () => {
       if (window.google?.accounts?.id) {
         const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -73,9 +76,13 @@ const LoginPage: React.FC = () => {
             shape: 'rectangular'
           });
         }
-      } else {
+      } else if (retryCount < maxRetries) {
         // Google script not loaded yet, retry after a short delay
+        retryCount++;
         setTimeout(initializeGoogleSignIn, 100);
+      } else {
+        // Max retries reached, show error
+        setError('Google Sign-in script not loaded. Please check your internet connection.');
       }
     };
 
