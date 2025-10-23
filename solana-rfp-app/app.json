@@ -1,0 +1,42 @@
+{
+  "name": "Solana RFP Tool",
+  "description": "AI-powered RFP question answering system for Solana",
+  "repository": "https://github.com/your-username/solana-rfp-tool",
+  "logo": "",
+  "keywords": ["solana", "rfp", "ai", "fastapi", "react"],
+  "stack": "heroku-22",
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "env": {
+    "OPENAI_API_KEY": {
+      "description": "OpenAI API key for AI functionality",
+      "required": true
+    },
+    "DATABASE_URL": {
+      "description": "PostgreSQL database URL",
+      "required": true
+    },
+    "SECRET_KEY": {
+      "description": "Secret key for JWT token generation",
+      "generator": "secret"
+    },
+    "BACKEND_CORS_ORIGINS": {
+      "description": "CORS origins (comma-separated)",
+      "value": "*"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:mini"
+    }
+  ]
+}

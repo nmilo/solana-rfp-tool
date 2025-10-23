@@ -4,10 +4,15 @@
   "private": true,
   "scripts": {
     "build": "cd frontend && npm run build",
-    "start": "cd frontend && npm start",
-    "install": "cd frontend && npm install"
+    "start": "cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT",
+    "install": "cd frontend && npm install",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
   },
   "workspaces": [
     "frontend"
-  ]
+  ],
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  }
 }
