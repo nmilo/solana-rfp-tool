@@ -124,7 +124,8 @@ async def upload_document(
         # Extract questions from text
         try:
             questions = await document_service.extract_questions_from_text(text)
-        except ValueError:
+        except Exception as e:
+            print(f"OpenAI extraction failed: {e}, using fallback")
             # Fallback to simple extraction
             questions = document_service.extract_questions_simple(text)
         
