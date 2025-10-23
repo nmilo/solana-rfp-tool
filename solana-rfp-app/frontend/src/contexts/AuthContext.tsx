@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
       
       // Try to verify with backend
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/auth/me`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://solana-rfp-271974794838.herokuapp.com'}/api/v1/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/v1/auth/google-login`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://solana-rfp-271974794838.herokuapp.com'}/api/v1/auth/google-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
