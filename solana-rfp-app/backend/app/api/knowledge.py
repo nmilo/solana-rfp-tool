@@ -384,3 +384,85 @@ async def initialize_knowledge_base(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error initializing knowledge base: {str(e)}")
+
+@router.post("/import-sample-rfps")
+async def import_sample_rfps(
+    kb_service: KnowledgeBaseService = Depends(get_kb_service),
+    document_service: DocumentService = Depends(get_document_service),
+    current_user = Depends(get_current_user)
+):
+    """Import sample RFP documents with questions and answers"""
+    
+    # Sample RFP data with questions and proper answers
+    sample_rfp_data = [
+        {
+            "question": "Are there support and training programs for developers?",
+            "answer": "Yes, Solana Foundation provides comprehensive support and training programs for developers including: 1) Solana University - free online courses covering blockchain basics to advanced development, 2) Developer Bootcamps - intensive hands-on training sessions, 3) Hackathons - regular competitions with prizes and mentorship, 4) Technical Documentation - extensive guides and tutorials, 5) Community Support - active Discord channels and forums, 6) Grant Programs - funding for innovative projects, 7) Mentorship Programs - pairing with experienced developers.",
+            "category": "developer_support",
+            "tags": ["support", "training", "developers", "education", "grants"]
+        },
+        {
+            "question": "Do you have testnets? Do you provide faucets for them?",
+            "answer": "Yes, Solana operates multiple testnets: 1) Devnet - for development and testing, 2) Testnet - for integration testing, 3) Mainnet Beta - production network. Faucets are available for Devnet and Testnet to provide free SOL tokens for testing. The main faucet is at https://faucet.solana.com/ and provides up to 2 SOL per request for development purposes.",
+            "category": "testnets",
+            "tags": ["testnet", "devnet", "faucet", "testing", "sol"]
+        },
+        {
+            "question": "Do you provide faucets or institutional access to tokens for testnets?",
+            "answer": "Yes, Solana provides both public faucets and institutional access: 1) Public Faucets - Available at https://faucet.solana.com/ for individual developers, 2) Institutional Faucets - For organizations requiring larger amounts, contact the Solana Foundation for custom faucet access, 3) API Access - Programmatic faucet access available for automated testing, 4) Partner Faucets - Third-party services also provide faucet functionality.",
+            "category": "faucets",
+            "tags": ["faucet", "institutional", "api", "testing", "tokens"]
+        },
+        {
+            "question": "Do you organize hackathons or events for developers? Locations, attendees, results of previous events?",
+            "answer": "Yes, Solana Foundation organizes numerous hackathons and events globally: 1) Solana Hacker Houses - Regular events in major cities (San Francisco, New York, London, Tokyo, Singapore), 2) Online Hackathons - Virtual events with global participation, 3) University Partnerships - Campus events at leading universities, 4) Previous Results - Over 10,000 developers have participated, with $50M+ in prizes awarded, 5) Notable Winners - Projects like Magic Eden, Jupiter, and Orca started as hackathon projects, 6) Upcoming Events - Check https://solana.com/events for current schedule.",
+            "category": "events",
+            "tags": ["hackathons", "events", "developers", "prizes", "global"]
+        },
+        {
+            "question": "What are the key partnerships you have in the stablecoin sector?",
+            "answer": "The Solana network is open and permissionless; stablecoin issuers don't need a formal agreement with the Foundation. However, the Foundation actively supports issuers informally with technical, ecosystem, and business advisory. Examples include PayPal (PYUSD, leveraging token extensions for compliance features), Paxos (USDP, first post-Ethereum NYDFS approval), USDT (~$0.7 B supply), and EURC by Circle.",
+            "category": "stablecoins",
+            "tags": ["stablecoin", "partnerships", "paypal", "paxos", "usdc", "usdt", "eurc"]
+        },
+        {
+            "question": "What is the transaction throughput and latency of your blockchain?",
+            "answer": "Solana's current performance metrics: 1) Throughput - Up to 65,000 transactions per second (TPS) in optimal conditions, 2) Latency - Sub-second finality with 400ms block times, 3) Network Capacity - Handles high-frequency trading and DeFi applications, 4) Scalability - Horizontal scaling through parallel processing, 5) Real-world Performance - Consistently processes 2,000-3,000 TPS under normal load, 6) Peak Performance - Has demonstrated 50,000+ TPS during stress tests.",
+            "category": "performance",
+            "tags": ["throughput", "latency", "tps", "performance", "scalability"]
+        },
+        {
+            "question": "What consensus mechanism does your blockchain use?",
+            "answer": "Solana uses Proof of History (PoH) combined with Proof of Stake (PoS): 1) Proof of History - Creates a cryptographic clock that enables parallel processing, 2) Proof of Stake - Validators stake SOL tokens to participate in consensus, 3) Tower BFT - Byzantine Fault Tolerant consensus algorithm, 4) Leader Rotation - Validators take turns as leaders to propose blocks, 5) Finality - Fast finality with probabilistic finality in 400ms, 6) Security - High security through economic incentives and cryptographic proofs.",
+            "category": "consensus",
+            "tags": ["consensus", "proof-of-history", "proof-of-stake", "bft", "security"]
+        },
+        {
+            "question": "What programming languages are supported for smart contract development?",
+            "answer": "Solana primarily supports Rust for smart contract development: 1) Rust - Primary language with comprehensive SDK and tooling, 2) C/C++ - Alternative development option with C bindings, 3) Anchor Framework - High-level framework for Rust development, 4) Solana CLI - Command-line tools for development and deployment, 5) IDEs - Support for VS Code, IntelliJ, and other popular editors, 6) Documentation - Extensive guides and tutorials for all supported languages.",
+            "category": "development",
+            "tags": ["programming", "rust", "smart-contracts", "sdk", "development"]
+        },
+        {
+            "question": "What are the gas fees and transaction costs?",
+            "answer": "Solana offers extremely low transaction costs: 1) Base Fee - $0.00025 per transaction (approximately), 2) Priority Fees - Optional fees for faster processing during high congestion, 3) No Gas Fees - Unlike Ethereum, Solana doesn't use gas fees, 4) Predictable Costs - Transaction costs are fixed and predictable, 5) Micro-transactions - Enables micro-transactions and high-frequency trading, 6) Cost Comparison - Significantly lower than other major blockchains.",
+            "category": "fees",
+            "tags": ["fees", "costs", "transactions", "gas", "pricing"]
+        },
+        {
+            "question": "What security measures and audit processes do you have in place?",
+            "answer": "Solana implements multiple security layers: 1) Code Audits - Regular third-party security audits of core protocol, 2) Bug Bounty Program - Active program with rewards for security vulnerabilities, 3) Validator Security - Decentralized validator network with economic incentives, 4) Network Monitoring - Continuous monitoring and anomaly detection, 5) Security Documentation - Comprehensive security guidelines and best practices, 6) Incident Response - Rapid response team for security incidents.",
+            "category": "security",
+            "tags": ["security", "audits", "bug-bounty", "monitoring", "incident-response"]
+        }
+    ]
+    
+    try:
+        imported_count = kb_service.import_from_json(sample_rfp_data, created_by=current_user.email)
+        return {
+            "message": f"Successfully imported {imported_count} RFP entries with questions and answers",
+            "imported_count": imported_count,
+            "categories": list(set([item["category"] for item in sample_rfp_data]))
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error importing RFP data: {str(e)}")
