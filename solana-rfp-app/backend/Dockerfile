@@ -15,8 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
+# Set Python path to current directory
+ENV PYTHONPATH=/app
+
 # Expose port
 EXPOSE 8000
 
-# Run the application
+# Run the application (gunicorn will find app.main:app from /app directory)
 CMD ["sh", "-c", "gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:${PORT:-8000}"]
