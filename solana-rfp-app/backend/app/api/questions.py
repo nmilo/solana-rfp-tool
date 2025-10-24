@@ -111,16 +111,16 @@ async def process_text_questions(
             processing_time=time.time() - start_time
         )
     
-    # Find answers in knowledge base
+    # Find answers using priority system (exact match first, then AI fallback)
     results = []
     for question in questions:
-        best_match = kb_service.get_best_answer(question, min_confidence=0.1)
+        answer_data = await kb_service.get_answer_with_ai_fallback(question, min_confidence=0.1)
         results.append(QuestionResult(
             question=question,
-            answer=best_match["answer"] if best_match else "No answer found in knowledge base",
-            confidence=best_match["confidence"] if best_match else 0.0,
-            source_id=best_match["id"] if best_match else None,
-            source_question=best_match["question"] if best_match else None
+            answer=answer_data["answer"],
+            confidence=answer_data["confidence"],
+            source_id=answer_data["source_id"],
+            source_question=answer_data["source_question"]
         ))
     
         # Save submission to database

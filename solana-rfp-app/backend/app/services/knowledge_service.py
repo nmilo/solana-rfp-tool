@@ -45,8 +45,31 @@ class KnowledgeBaseService:
         return self.db.query(KnowledgeBase).filter(KnowledgeBase.is_active == True).all()
     
     def search_answers(self, question: str, min_confidence: float = 0.1) -> List[Dict]:
-        """Search knowledge base for answers to a question"""
-        if not self.kb_items or not self.vectorizer:
+        """Search knowledge base for answers to a question with priority system"""
+        if not self.kb_items:
+            return []
+        
+        # Priority 1: Look for exact question matches first
+        exact_matches = []
+        for kb_item in self.kb_items:
+            if self._is_exact_match(question, kb_item.question):
+                exact_matches.append({
+                    "id": kb_item.id,
+                    "question": kb_item.question,
+                    "answer": kb_item.answer,
+                    "confidence": 1.0,  # Exact match gets highest confidence
+                    "tags": kb_item.get_tags(),
+                    "category": kb_item.category,
+                    "match_type": "exact"
+                })
+        
+        if exact_matches:
+            # Return exact matches first, sorted by question length (most specific first)
+            exact_matches.sort(key=lambda x: len(x["question"]), reverse=True)
+            return exact_matches
+        
+        # Priority 2: If no exact match, use semantic search
+        if not self.vectorizer:
             return []
         
         # Normalize question
@@ -56,28 +79,122 @@ class KnowledgeBaseService:
         # Calculate similarities
         similarities = cosine_similarity(qv, self.X)[0]
         
-        # Get matches above threshold
+        # Get matches above threshold, excluding placeholder answers
         matches = []
         for i, score in enumerate(similarities):
             if score >= min_confidence:
                 kb_item = self.kb_items[i]
-                matches.append({
-                    "id": kb_item.id,
-                    "question": kb_item.question,
-                    "answer": kb_item.answer,
-                    "confidence": float(score),
-                    "tags": kb_item.get_tags(),
-                    "category": kb_item.category
-                })
+                # Skip placeholder answers
+                if "This question was extracted from the uploaded document:" not in kb_item.answer:
+                    matches.append({
+                        "id": kb_item.id,
+                        "question": kb_item.question,
+                        "answer": kb_item.answer,
+                        "confidence": float(score),
+                        "tags": kb_item.get_tags(),
+                        "category": kb_item.category,
+                        "match_type": "semantic"
+                    })
         
-        # Sort by confidence
+        # Sort by confidence (highest first)
         matches.sort(key=lambda x: x["confidence"], reverse=True)
         return matches
+    
+    def _is_exact_match(self, question1: str, question2: str) -> bool:
+        """Check if two questions are exact matches (case-insensitive, normalized)"""
+        q1_norm = self._normalize_text(question1).lower()
+        q2_norm = self._normalize_text(question2).lower()
+        
+        # Exact match
+        if q1_norm == q2_norm:
+            return True
+        
+        # Check if one is contained in the other (for partial matches)
+        if len(q1_norm) > 20 and len(q2_norm) > 20:
+            if q1_norm in q2_norm or q2_norm in q1_norm:
+                return True
+        
+        return False
     
     def get_best_answer(self, question: str, min_confidence: float = 0.1) -> Optional[Dict]:
         """Get the best matching answer for a question"""
         matches = self.search_answers(question, min_confidence)
         return matches[0] if matches else None
+    
+    async def get_answer_with_ai_fallback(self, question: str, min_confidence: float = 0.1) -> Dict:
+        """Get answer with AI fallback if no knowledge base match found"""
+        # First try knowledge base search
+        matches = self.search_answers(question, min_confidence)
+        
+        if matches:
+            # Return the best match from knowledge base
+            best_match = matches[0]
+            return {
+                "question": question,
+                "answer": best_match["answer"],
+                "confidence": best_match["confidence"],
+                "source_id": best_match["id"],
+                "source_question": best_match["question"],
+                "match_type": best_match.get("match_type", "semantic"),
+                "source": "knowledge_base"
+            }
+        
+        # If no knowledge base match, use AI to generate answer
+        ai_answer = await self._generate_ai_answer(question)
+        return {
+            "question": question,
+            "answer": ai_answer,
+            "confidence": 0.8,  # High confidence for AI-generated answers
+            "source_id": None,
+            "source_question": None,
+            "match_type": "ai_generated",
+            "source": "ai"
+        }
+    
+    async def _generate_ai_answer(self, question: str) -> str:
+        """Generate an AI answer for a question not in knowledge base"""
+        try:
+            import openai
+            from app.core.config import settings
+            
+            if not settings.OPENAI_API_KEY:
+                return "I don't have enough information to answer this question. Please consult the Solana documentation or contact our technical team for assistance."
+            
+            openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+            
+            prompt = f"""
+            You are a Solana blockchain expert responding to RFP questions. 
+            Provide a comprehensive, professional answer to the following question based on Solana's capabilities and features.
+            The answer should be suitable for a Request for Proposal (RFP) response.
+            
+            Question: {question}
+            
+            Provide a detailed answer covering:
+            1. Solana's specific capabilities related to this question
+            2. Technical details and specifications
+            3. Benefits and advantages
+            4. Real-world examples or use cases where applicable
+            5. Any relevant statistics or metrics
+            
+            Answer:
+            """
+            
+            response = openai_client.chat.completions.create(
+                model="gpt-4",
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=600,
+                temperature=0.3
+            )
+            
+            answer = response.choices[0].message.content.strip()
+            
+            # Add source attribution
+            answer += "\n\n[This answer was generated using AI based on Solana blockchain knowledge.]"
+            
+            return answer
+            
+        except Exception as e:
+            return f"I don't have enough information to answer this question. Please consult the Solana documentation or contact our technical team for assistance. Error: {str(e)}"
     
     def add_entry(self, entry_data: KnowledgeBaseCreate, created_by: str = "admin") -> Dict:
         """Add new knowledge base entry"""
