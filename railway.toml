@@ -1,0 +1,8 @@
+[build]
+builder = "nixpacks"
+buildCommand = "cd solana-rfp-app/backend && pip install -r requirements.txt"
+
+[deploy]
+startCommand = "cd solana-rfp-app/backend && gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10

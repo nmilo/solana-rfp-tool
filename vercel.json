@@ -7,20 +7,6 @@
       "config": {
         "distDir": "build"
       }
-    },
-    {
-      "src": "solana-rfp-app/api/index.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "solana-rfp-app/api/index.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "solana-rfp-app/frontend/build/$1"
     }
   ]
 }
