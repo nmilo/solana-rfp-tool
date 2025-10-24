@@ -35,6 +35,7 @@ class KnowledgeBase(Base):
     is_active = Column(Boolean, default=True)
     created_by = Column(String(100), default="admin")
     last_modified_by = Column(String(100), default="admin")
+    embedding = Column(Text)  # JSON string for vector embeddings
     
     def get_tags(self):
         """Get tags as a list"""

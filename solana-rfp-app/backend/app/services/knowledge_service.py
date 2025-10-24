@@ -7,6 +7,7 @@ import json
 from app.models.database import KnowledgeBase
 from app.models.schemas import KnowledgeBaseCreate, KnowledgeBaseUpdate
 from app.core.logger import main_logger, log_error, log_database_operation
+from app.services.vector_search_service import VectorSearchService
 
 class KnowledgeBaseService:
     def __init__(self, db: Session):
@@ -15,6 +16,7 @@ class KnowledgeBaseService:
         self.X = None
         self.corpus = None
         self.kb_items = []
+        self.vector_service = VectorSearchService(db)
         self._rebuild_index()
     
     def _rebuild_index(self):
@@ -140,7 +142,21 @@ class KnowledgeBaseService:
                 "source_label": "KB Match" if best_match.get("match_type") == "exact" else "KB Similar"
             }
         
-        # If no knowledge base match, try broader search with lower confidence
+        # If no exact match, try vector search
+        vector_match = await self.vector_service.get_best_vector_match(question, min_similarity=0.7)
+        if vector_match:
+            return {
+                "question": question,
+                "answer": vector_match["answer"],
+                "confidence": vector_match["similarity"],
+                "source_id": vector_match["id"],
+                "source_question": vector_match["question"],
+                "match_type": "vector",
+                "source": "knowledge_base",
+                "source_label": "AI Match"
+            }
+        
+        # If no vector match, try broader semantic search
         broader_matches = self.search_answers(question, min_confidence=0.2)
         if broader_matches:
             best_match = broader_matches[0]
