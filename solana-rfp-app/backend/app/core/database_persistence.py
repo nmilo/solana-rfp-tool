@@ -164,3 +164,4 @@ class DatabasePersistence:
         except Exception as e:
             log_error(main_logger, e, "check_and_restore")
             return False
+

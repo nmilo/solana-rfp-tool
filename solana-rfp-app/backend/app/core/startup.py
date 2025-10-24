@@ -48,3 +48,4 @@ def create_initial_backup():
     except Exception as e:
         main_logger.error(f"Failed to create initial backup: {str(e)}")
         raise
+

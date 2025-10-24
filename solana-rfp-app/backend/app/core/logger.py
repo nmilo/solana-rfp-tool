@@ -84,3 +84,4 @@ def log_database_operation(operation: str, table: str, details: str = "", succes
 
 # Initialize main logger
 main_logger = setup_logger()
+
