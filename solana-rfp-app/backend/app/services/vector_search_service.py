@@ -11,7 +11,7 @@ class VectorSearchService:
     def __init__(self, db: Session):
         self.db = db
         self.openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
-        self.embedding_model = "text-embedding-ada-002"
+        self.embedding_model = "text-embedding-3-large"  # Latest and most powerful model
     
     async def generate_embedding(self, text: str) -> List[float]:
         """Generate OpenAI embedding for text"""
