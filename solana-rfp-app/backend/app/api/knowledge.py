@@ -377,6 +377,101 @@ async def get_knowledge_base_stats(
         "top_tags": dict(sorted(tags.items(), key=lambda x: x[1], reverse=True)[:10])
     }
 
+@router.get("/admin/preview")
+async def get_knowledge_base_preview(
+    kb_service: KnowledgeBaseService = Depends(get_kb_service),
+    current_user = Depends(get_current_user),
+    page: int = Query(1, ge=1, description="Page number"),
+    page_size: int = Query(20, ge=1, le=100, description="Items per page"),
+    category: Optional[str] = Query(None, description="Filter by category"),
+    search: Optional[str] = Query(None, description="Search in questions and answers")
+):
+    """Get knowledge base entries for admin preview"""
+    try:
+        # Get all entries
+        all_entries = kb_service.get_all_active_entries()
+        
+        # Apply filters
+        filtered_entries = all_entries
+        
+        if category:
+            filtered_entries = [entry for entry in filtered_entries if entry.category == category]
+        
+        if search:
+            search_lower = search.lower()
+            filtered_entries = [
+                entry for entry in filtered_entries 
+                if search_lower in entry.question.lower() or search_lower in entry.answer.lower()
+            ]
+        
+        # Calculate pagination
+        total_entries = len(filtered_entries)
+        total_pages = (total_entries + page_size - 1) // page_size
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+        
+        # Get page entries
+        page_entries = filtered_entries[start_idx:end_idx]
+        
+        # Convert to response format
+        entries_data = []
+        for entry in page_entries:
+            entries_data.append({
+                "id": str(entry.id),
+                "question": entry.question,
+                "answer": entry.answer[:200] + "..." if len(entry.answer) > 200 else entry.answer,
+                "answer_preview": entry.answer[:100] + "..." if len(entry.answer) > 100 else entry.answer,
+                "category": entry.category,
+                "tags": entry.get_tags(),
+                "created_at": entry.created_at.isoformat(),
+                "created_by": entry.created_by,
+                "is_active": entry.is_active,
+                "confidence_threshold": entry.confidence_threshold
+            })
+        
+        return {
+            "entries": entries_data,
+            "pagination": {
+                "page": page,
+                "page_size": page_size,
+                "total_entries": total_entries,
+                "total_pages": total_pages,
+                "has_next": page < total_pages,
+                "has_prev": page > 1
+            },
+            "filters": {
+                "category": category,
+                "search": search
+            }
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting knowledge base preview: {str(e)}")
+
+@router.get("/admin/categories")
+async def get_knowledge_base_categories(
+    kb_service: KnowledgeBaseService = Depends(get_kb_service),
+    current_user = Depends(get_current_user)
+):
+    """Get all categories in knowledge base"""
+    try:
+        all_entries = kb_service.get_all_active_entries()
+        categories = {}
+        
+        for entry in all_entries:
+            category = entry.category or "Uncategorized"
+            if category not in categories:
+                categories[category] = 0
+            categories[category] += 1
+        
+        return {
+            "categories": categories,
+            "total_categories": len(categories)
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting categories: {str(e)}")
+
 @router.post("/initialize")
 async def initialize_knowledge_base(
     kb_service: KnowledgeBaseService = Depends(get_kb_service),

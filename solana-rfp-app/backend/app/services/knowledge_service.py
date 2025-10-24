@@ -79,22 +79,20 @@ class KnowledgeBaseService:
         # Calculate similarities
         similarities = cosine_similarity(qv, self.X)[0]
         
-        # Get matches above threshold, excluding placeholder answers
+        # Get matches above threshold
         matches = []
         for i, score in enumerate(similarities):
             if score >= min_confidence:
                 kb_item = self.kb_items[i]
-                # Skip placeholder answers
-                if "This question was extracted from the uploaded document:" not in kb_item.answer:
-                    matches.append({
-                        "id": kb_item.id,
-                        "question": kb_item.question,
-                        "answer": kb_item.answer,
-                        "confidence": float(score),
-                        "tags": kb_item.get_tags(),
-                        "category": kb_item.category,
-                        "match_type": "semantic"
-                    })
+                matches.append({
+                    "id": kb_item.id,
+                    "question": kb_item.question,
+                    "answer": kb_item.answer,
+                    "confidence": float(score),
+                    "tags": kb_item.get_tags(),
+                    "category": kb_item.category,
+                    "match_type": "semantic"
+                })
         
         # Sort by confidence (highest first)
         matches.sort(key=lambda x: x["confidence"], reverse=True)
@@ -122,7 +120,7 @@ class KnowledgeBaseService:
         return matches[0] if matches else None
     
     async def get_answer_with_ai_fallback(self, question: str, min_confidence: float = 0.1) -> Dict:
-        """Get answer with AI fallback if no knowledge base match found"""
+        """Get answer with smart AI fallback if no knowledge base match found"""
         # First try knowledge base search
         matches = self.search_answers(question, min_confidence)
         
@@ -136,20 +134,83 @@ class KnowledgeBaseService:
                 "source_id": best_match["id"],
                 "source_question": best_match["question"],
                 "match_type": best_match.get("match_type", "semantic"),
-                "source": "knowledge_base"
+                "source": "knowledge_base",
+                "source_label": "KB Match" if best_match.get("match_type") == "exact" else "KB Similar"
             }
         
-        # If no knowledge base match, use AI to generate answer
-        ai_answer = await self._generate_ai_answer(question)
-        return {
-            "question": question,
-            "answer": ai_answer,
-            "confidence": 0.8,  # High confidence for AI-generated answers
-            "source_id": None,
-            "source_question": None,
-            "match_type": "ai_generated",
-            "source": "ai"
-        }
+        # If no knowledge base match, try broader search with lower confidence
+        broader_matches = self.search_answers(question, min_confidence=0.05)
+        if broader_matches:
+            best_match = broader_matches[0]
+            return {
+                "question": question,
+                "answer": best_match["answer"],
+                "confidence": best_match["confidence"],
+                "source_id": best_match["id"],
+                "source_question": best_match["question"],
+                "match_type": "semantic",
+                "source": "knowledge_base",
+                "source_label": "KB Similar"
+            }
+        
+        # If still no match, decide whether to use AI or return no answer
+        if self._should_use_ai_for_question(question):
+            ai_answer = await self._generate_ai_answer(question)
+            return {
+                "question": question,
+                "answer": ai_answer,
+                "confidence": 0.8,
+                "source_id": None,
+                "source_question": None,
+                "match_type": "ai_generated",
+                "source": "ai",
+                "source_label": "AI Generated"
+            }
+        else:
+            return {
+                "question": question,
+                "answer": "No answer found in knowledge base for this question.",
+                "confidence": 0.0,
+                "source_id": None,
+                "source_question": None,
+                "match_type": "no_answer",
+                "source": "none",
+                "source_label": "No Answer"
+            }
+    
+    def _should_use_ai_for_question(self, question: str) -> bool:
+        """Determine if AI should be used for this question"""
+        question_lower = question.lower()
+        
+        # Questions that are clearly about Solana/blockchain should get AI answers
+        solana_keywords = [
+            'solana', 'blockchain', 'crypto', 'defi', 'nft', 'smart contract',
+            'validator', 'consensus', 'transaction', 'block', 'network',
+            'token', 'wallet', 'staking', 'governance', 'security',
+            'scalability', 'throughput', 'latency', 'fee', 'cost',
+            'developer', 'sdk', 'api', 'documentation', 'testnet',
+            'mainnet', 'rpc', 'node', 'bridge', 'oracle'
+        ]
+        
+        # Check if question contains Solana/blockchain related terms
+        if any(keyword in question_lower for keyword in solana_keywords):
+            return True
+        
+        # Check if it's a technical question
+        technical_indicators = [
+            'how does', 'how do', 'what is', 'what are', 'how to',
+            'can you', 'does solana', 'is solana', 'will solana',
+            'does the', 'is the', 'what the', 'how the'
+        ]
+        
+        if any(indicator in question_lower for indicator in technical_indicators):
+            return True
+        
+        # If it's a very specific question that might not be in KB, use AI
+        if len(question) > 30 and ('?' in question or any(word in question_lower for word in ['please', 'provide', 'explain', 'describe'])):
+            return True
+        
+        return False
     
     async def _generate_ai_answer(self, question: str) -> str:
         """Generate an AI answer for a question not in knowledge base"""

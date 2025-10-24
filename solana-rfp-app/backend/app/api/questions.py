@@ -120,7 +120,8 @@ async def process_text_questions(
             answer=answer_data["answer"],
             confidence=answer_data["confidence"],
             source_id=answer_data["source_id"],
-            source_question=answer_data["source_question"]
+            source_question=answer_data["source_question"],
+            source_label=answer_data.get("source_label", "Unknown")
         ))
     
         # Save submission to database

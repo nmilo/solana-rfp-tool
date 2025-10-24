@@ -45,6 +45,7 @@ class QuestionResult(BaseModel):
     confidence: float
     source_id: Optional[UUID] = None
     source_question: Optional[str] = None
+    source_label: Optional[str] = None
 
 class ProcessingResult(BaseModel):
     questions_processed: int
