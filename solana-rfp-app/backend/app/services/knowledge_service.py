@@ -54,7 +54,7 @@ class KnowledgeBaseService:
             log_database_operation("SELECT", "knowledge_base", f"Failed to retrieve entries: {str(e)}", False)
             raise
     
-    def search_answers(self, question: str, min_confidence: float = 0.1) -> List[Dict]:
+    def search_answers(self, question: str, min_confidence: float = 0.3) -> List[Dict]:
         """Search knowledge base for answers to a question with priority system"""
         if not self.kb_items:
             return []
@@ -110,26 +110,18 @@ class KnowledgeBaseService:
     
     def _is_exact_match(self, question1: str, question2: str) -> bool:
         """Check if two questions are exact matches (case-insensitive, normalized)"""
-        q1_norm = self._normalize_text(question1).lower()
-        q2_norm = self._normalize_text(question2).lower()
+        q1_norm = self._normalize_text(question1).lower().strip()
+        q2_norm = self._normalize_text(question2).lower().strip()
         
-        # Exact match
-        if q1_norm == q2_norm:
-            return True
-        
-        # Check if one is contained in the other (for partial matches)
-        if len(q1_norm) > 20 and len(q2_norm) > 20:
-            if q1_norm in q2_norm or q2_norm in q1_norm:
-                return True
-        
-        return False
+        # Only return True for exact matches, not partial matches
+        return q1_norm == q2_norm
     
     def get_best_answer(self, question: str, min_confidence: float = 0.1) -> Optional[Dict]:
         """Get the best matching answer for a question"""
         matches = self.search_answers(question, min_confidence)
         return matches[0] if matches else None
     
-    async def get_answer_with_ai_fallback(self, question: str, min_confidence: float = 0.1) -> Dict:
+    async def get_answer_with_ai_fallback(self, question: str, min_confidence: float = 0.3) -> Dict:
         """Get answer with smart AI fallback if no knowledge base match found"""
         # First try knowledge base search
         matches = self.search_answers(question, min_confidence)
@@ -149,7 +141,7 @@ class KnowledgeBaseService:
             }
         
         # If no knowledge base match, try broader search with lower confidence
-        broader_matches = self.search_answers(question, min_confidence=0.05)
+        broader_matches = self.search_answers(question, min_confidence=0.2)
         if broader_matches:
             best_match = broader_matches[0]
             return {

@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import { HomePage } from './pages/HomePage';
 import { KnowledgeBasePage } from './pages/KnowledgeBasePage';
 import { AdminPage } from './pages/AdminPage';
+import TestAdminPage from './pages/TestAdminPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/knowledge" element={<KnowledgeBasePage />} />
                     <Route path="/admin" element={<AdminPage />} />
+                    <Route path="/test-admin" element={<TestAdminPage />} />
                   </Routes>
                 </main>
               </div>

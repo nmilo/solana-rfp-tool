@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import { KnowledgeBaseEntry, KnowledgeBaseStats } from '../types';
+import KnowledgeBasePreview from '../components/KnowledgeBasePreview';
 
 export const AdminPage: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'manage' | 'preview'>('preview');
   const [entries, setEntries] = useState<KnowledgeBaseEntry[]>([]);
   const [stats, setStats] = useState<KnowledgeBaseStats | null>(null);
   const [isEditing, setIsEditing] = useState<string | null>(null);
@@ -98,6 +100,40 @@ export const AdminPage: React.FC = () => {
               Add, edit, and manage knowledge base entries
             </p>
           </div>
+
+          {/* Tab Navigation */}
+          <div className="mb-8">
+            <div className="border-b border-arena-border">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  onClick={() => setActiveTab('preview')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'preview'
+                      ? 'border-arena-accent text-arena-accent'
+                      : 'border-transparent text-arena-text-muted hover:text-arena-text hover:border-arena-border'
+                  }`}
+                >
+                  Knowledge Base Preview
+                </button>
+                <button
+                  onClick={() => setActiveTab('manage')}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === 'manage'
+                      ? 'border-arena-accent text-arena-accent'
+                      : 'border-transparent text-arena-text-muted hover:text-arena-text hover:border-arena-border'
+                  }`}
+                >
+                  Manage Entries
+                </button>
+              </nav>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'preview' ? (
+            <KnowledgeBasePreview />
+          ) : (
+            <div>
 
           {/* Stats */}
           {stats && (
@@ -291,6 +327,8 @@ export const AdminPage: React.FC = () => {
               </div>
             ))}
           </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

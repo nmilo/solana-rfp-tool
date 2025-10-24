@@ -1,0 +1,214 @@
+[
+  {
+    "question": "Please provide a list of key partnership you have in the stablecoin sector",
+    "answer": "The Solana network is open and permissionless and as a result there is no requirement for a stablecoin issuer to formally partner or engage in a commercial agreement with the Solana Foundation. However, as its role as ecosystem evangelists and catalysts, the Foundation works actively with issuers to support them with technical advisory, ecosystem activation, awareness and business advisory in a more informal basis. There are several notable examples of stablecoin issuers working with Solana Foundation and / or key ecosystem teams: \n\n- PayPal issuance of PYUSD on Solana, leveraging token-extensions to enable a rich set of compliance oriented features. PYUSD grew to $670 MM in supply in 3 months\n- Circle / USDC on Solana - 2.4 B in supply\n- Paxos issuance of USDP on Solana - the first chain after Eth L1 to be approved by NY DFS\n- USDT is issued in Solana ($0.7 B supply)\n- EURC just launched on Solana from Circle"
+  },
+  {
+    "question": "Please provide case studies or examples of successful stablecoin projects on your Blockchain/L2",
+    "answer": "Case Study 1: PayPal USD (PYUSD) on Solana\n\nIntroduction\u2028\nPayPal\u2019s stablecoin, PayPal USD (PYUSD), surpassed a $1 billion market cap after its expansion to Solana. This move was driven by the need for faster settlement, lower costs, and a more performant blockchain for on-chain payments.\n\nBackground and Context\u2028\nPayPal launched PYUSD on Ethereum in August 2023, aiming to revolutionize digital payments. However, to provide utility beyond awareness, PayPal expanded to Solana, leveraging its near-instant finality, sub-cent transaction fees, and advanced token features like token extensions and compliance tools.\n\nImplementation\u2028\nSolana became the primary blockchain for PYUSD, accounting for 88% of its 271% growth post-launch. Key features such as confidential transfers and memo fields, along with low transaction costs, made Solana a preferred choice for merchants and developers.\n\nChallenges Faced\u2028\nInitially, PYUSD faced challenges in scaling on Ethereum due to high fees and slower settlement. The move to Solana addressed these issues, but expanding DeFi integration remained a priority. Solana's ecosystem, particularly its 2,500+ developers and partnerships with DeFi protocols like Kamino Finance, helped overcome these hurdles.\nResults and Impact\u2028PYUSD on Solana now holds 64% market share compared to Ethereum's 36%. Around 81% of PYUSD on Solana is used in DeFi, with transaction fees averaging just a tenth of a cent. Solana\u2019s token features have significantly boosted PYUSD\u2019s utility for global payments and DeFi participation.\n\nKey Takeaways\u2028\nThe expansion to Solana exemplifies how blockchain selection impacts stablecoin adoption. Solana\u2019s speed, cost efficiency, and programmable token features enabled PYUSD to scale and integrate into DeFi, solidifying its place in the future of on-chain payments.\n\nSources\n- https://pyusd.mirror.xyz/TpEwPNybrwzPSSQenLtO4kggy98KH4oQRc06ggVnA0k\n- https://solana.com/solutions/token-extensions \n\n\n\n\nCase Study 2: Visa\u2019s Expansion of Stablecoin Settlement on Solana\n\nIntroduction\u2028\nVisa has expanded its stablecoin settlement capabilities by integrating with Solana, alongside Ethereum, to enhance cross-border transactions. This initiative leverages USDC (Circle) to improve settlement speed and reduce costs for global merchants.\n\nBackground and Context\u2028\nVisa has been exploring blockchain technology since 2021, initially piloting USDC on Ethereum. In 2023, Visa introduced Solana for its high performance, supporting faster and more affordable transactions.\n\nImplementation\u2028\nVisa partnered with acquirers Worldpay and Nuvei to offer USDC settlement via Solana. Solana's sub-second block times and scalability made it ideal for merchants needing quicker payments across global markets.\n\nChallenges Faced\u2028\nOne challenge was maintaining seamless integration with traditional financial systems while adopting new blockchain technology. Visa worked closely with its partners to ensure smooth on-chain USDC settlements.\nResults and Impact\u2028By using Solana, Visa reduced transaction costs and settlement times, benefiting merchants globally. This move positioned Visa as a leader in stablecoin adoption, directly integrating blockchain technology into traditional finance.\n\nKey Takeaways\u2028\nVisa's integration with Solana demonstrates how legacy financial institutions can use blockchain to modernize cross-border payments. The partnership with USDC highlights stablecoins\u2019 growing role in the future of finance, offering speed and efficiency improvements in global commerce.\n\nSources\n- https://usa.visa.com/about-visa/newsroom/press-releases.releaseId.19881.html \n\n\n\n\nCase Study 3: USDC (Circle) on Solana\n\nIntroduction\u2028\nUSDC (USD Coin) is a fully reserved, U.S. dollar-backed stablecoin issued by Circle. Its integration with Solana has made USDC a key asset for various use cases including high-frequency trading, financial services, and consumer payments.\n\nBackground and Context\u2028\nSolana\u2019s blockchain is known for its low transaction fees (a fraction of a cent) and settlement times as fast as 400 milliseconds. This performance made Solana an ideal choice for USDC, enabling developers to create scalable apps without sacrificing speed or cost-efficiency.\n\nImplementation\u2028\nUSDC on Solana provides businesses and developers seamless access through Circle\u2019s Mint account, digital asset exchanges, and supported apps. By choosing Solana, Circle ensured near-instant transactions, making it easier for businesses to integrate USDC into their products.\n\nChallenges Faced\u2028\nInitially, bridging USDC across different blockchains and ensuring sufficient liquidity posed some challenges. However, with Circle\u2019s Cross-Chain Transfer Protocol (CCTP), businesses can easily move USDC between chains like Ethereum and Solana without third-party bridges, ensuring seamless liquidity management.\n\nKey Takeaways\u2028\nUSDC on Solana holds over $2.5 billion in supply (as of 2024) and has become essential in the blockchain\u2019s ecosystem, particularly in DeFi applications. Solana's speed and cost efficiency have driven the adoption of USDC, making it a crucial asset in both financial and consumer applications.\nUSDC\u2019s integration on Solana illustrates how blockchain performance can significantly enhance the utility of stablecoins. Solana\u2019s infrastructure allows USDC to provide businesses and users with fast, affordable, and reliable digital dollar transactions globally, driving adoption in diverse sectors.\n\nSources\n- https://www.circle.com/en/multi-chain-usdc/solana \n\n\n\n\nCase Study 4: EURC (Circle's Euro Coin) on Solana\n\nIntroduction\u2028\nIn December 2023, Circle launched Euro Coin (EURC), its fully reserved euro-backed stablecoin, on the Solana blockchain. EURC provides businesses and users with fast, cost-effective euro-denominated transactions, expanding Solana's offerings for global payments.\n\nBackground and Context\u2028\nSolana was selected for its low fees and fast settlement, making it an ideal platform for cross-border euro payments. EURC's availability on Solana offers 24/7 foreign exchange (FX) services and opens new avenues for DeFi applications, particularly in European remittance corridors.\n\nImplementation\u2028\nWith Circle\u2019s institutional-grade on/off-ramps, businesses can convert EUR to EURC seamlessly. EURC\u2019s integration with Solana allows developers and users to leverage DeFi applications such as Jupiter Exchange, Orca, and Raydium for borrowing, lending, and FX trading.\n\nChallenges Faced\u2028\nInitially, the challenge was ensuring EURC\u2019s widespread adoption in a primarily USD-dominated market. However, Solana\u2019s efficiency and integration with multiple DeFi protocols helped boost liquidity and demand for EURC, particularly for euro-based transactions and FX services.\n\u2028\nKey Takeaways\u2028\nEURC on Solana has enabled instant, low-cost FX and cross-border euro payments. With strong support from DeFi applications, EURC has become a powerful tool for safeguarding against local currency volatility and offering financial services in the Eurozone. The launch of EURC on Solana demonstrates the potential for euro-denominated stablecoins to thrive on fast, scalable blockchains. EURC\u2019s expansion on Solana provides businesses and users with an efficient, secure, and cost-effective way to transact in euros, broadening Solana\u2019s global financial reach.\n\nSources\n- https://www.circle.com/en/pressroom/eurc-launches-on-solana \n\n\n\n\nCase Study 5: Paxos Dollar (USDP) on Solana\nIntroduction\u2028\nIn December 2023, Paxos expanded its Paxos Dollar (USDP) stablecoin to the Solana blockchain, marking Solana as the first chain beyond Ethereum Layer 1 approved by the New York Department of Financial Services (NYDFS). This milestone underscores Solana\u2019s regulatory compliance and its growing role in the stablecoin ecosystem.\n\nBackground and Context\u2028\nPaxos chose Solana for its scalability, low transaction costs, and sub-second settlement times. Solana\u2019s regulatory approval by NYDFS was pivotal in ensuring that Paxos could expand USDP while maintaining its high standards for trust and compliance.\n\nImplementation\u2028\nUSDP on Solana allows for fast and low-cost settlements across global markets. Paxos leveraged Solana\u2019s infrastructure to offer more efficient financial transactions, particularly targeting institutional investors and enterprises needing secure and reliable stablecoin settlements.\n\nChallenges \nFaced\u2028USDP's primary challenge was ensuring that the expansion to a new blockchain adhered to the same rigorous regulatory standards established on Ethereum. With NYDFS\u2019s approval, Paxos successfully navigated these challenges, cementing Solana\u2019s place in compliant blockchain ecosystems.\n\nKey Takeaways\u2028\nSince its launch, USDP on Solana has significantly reduced transaction costs for large-scale financial institutions and has become an essential tool for real-time, compliant settlements. Solana's regulatory approval has enhanced confidence in USDP's use across institutional-grade financial applications. Paxos\u2019s expansion to Solana highlights the blockchain\u2019s potential to support compliant, large-scale financial products. The approval by NYDFS, combined with Solana\u2019s technical capabilities, allows USDP to offer fast, secure, and compliant transactions, reinforcing the blockchain\u2019s growing role in the global financial landscape.\n\nSources\n- https://paxos.com/2023/12/22/paxos-expands-to-the-solana-blockchain/"
+  },
+  {
+    "question": "What percentage of wallets hold stablecoins?",
+    "answer": "6.10% (3.1M out of 51.1M total wallets)"
+  },
+  {
+    "question": "What is the average amount held in stablecoins per wallet?",
+    "answer": "$458.50"
+  },
+  {
+    "question": "What is the average number of stablecoin transactions per wallet?",
+    "answer": "457 txns (Last 90 days avg)"
+  },
+  {
+    "question": "Do you support providers for non-custodial wallets or smart wallets? If yes, please provide a list",
+    "answer": "Yes"
+  },
+  {
+    "question": "Is your Blockchain EVM compatible?",
+    "answer": "No"
+  },
+  {
+    "question": "Can you provide the APIs and SDKs documentation for integration with your Blockchain/L2?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Would it be possible to have a node self-hosted?",
+    "answer": "Yes"
+  },
+  {
+    "question": "If you do have a self hosted node, you provide support for its setup?",
+    "answer": "No"
+  },
+  {
+    "question": "If having a node is not possible, what are your providers for RPCs?",
+    "answer": "Triton, Helius, Blockdaemon, Quicknode, Alchemy among others. There are many RPC providers that currently support Solana"
+  },
+  {
+    "question": "If you have RPCs, what's the SLA for them?",
+    "answer": "Foundation is not an RPC provider. Different node providers have different SLAs that tend to start at 99.9% uptime SLA"
+  },
+  {
+    "question": "What are the services that allow your Blockchain/L2 with other blockchains for cross-chain transactions and interoperability?",
+    "answer": "There are a number of different cross chain bridging/messaging options are available. Wormhole has a mature bridging/messaging system on Solana. Other services include Allbridge and deBridge. LayerZero just launched an integration that is currently in beta."
+  },
+  {
+    "question": "Do you have backward compatibility with previous versions of your Blockchain/L2? How is it executed? Please provide examples",
+    "answer": "Solana, like many blockchain platforms, does not have strict backward compatibility. This means that updates to the Solana network might introduce changes that could render older versions of software or smart contracts incompatible. There are a number of things Solana developers do to minimize disruptions including versioning and well communicated hard forks. Prior to the network activating specific non-backwards compatible upgrades, rigorous tests are completed in both testnet and devnet. Teams and developers are notified of specific potentially breaking changes ahead of time so they can adjust and handle the migration properly."
+  },
+  {
+    "question": "Is the blockchain/L2 compatible with with third-party services such as oracles, data providers, and other blockchain services? Please provide examples",
+    "answer": "Yes, Solana is highly compatible with third-party services such as oracles, data providers, and other blockchain services. This compatibility is essential for building complex applications that require real-world data or interactions with other blockchains.\nOracles: Pyth, Switchboard, Chainlink, and Dia"
+  },
+  {
+    "question": "Does your blockchain/L2 support an explorer? If yes, please provide link",
+    "answer": "Yes there are a number of explorers. A few examples:\nexplorer.solana.com\nsolscan.io\nsolana.fm"
+  },
+  {
+    "question": "What are the main use cases for which your Blockchain/L2 is currently being utilized?",
+    "answer": "Payments & Stablecoins, RWAs, DeFi, NFTs, DePin"
+  },
+  {
+    "question": "What are the use cases that will help lead your Blockchain/L2 to success in the future? Why?",
+    "answer": "The northstar of Solana is consensus at the speed of light. The protocol is best suited for scalable financial applications - payments, asset tokenization and trading. True central limit order book markets for anything that can be tokenized"
+  },
+  {
+    "question": "What actions are you taking to attract these use cases?",
+    "answer": "- Protocol Improvements: The core developers innovating on the client side (e.g. Anza, Jito, Jump) continue to focus on improvements such as new clients (e.g. Firedancer) that will ensure the protocol can scale to as large as 1MM TPS as demand grows\n- The ecosysten is building new primitives to support financial use cases - examples include Token Extensions for stablecoin issuance, Blinks for distributed commerce and Solana Pay for in-store commerce\n- The Solana Foundation is focused on the growth of the ecosystem through supporting validator growth and diversity, community engagement and activation and technical advisory\n- There is a strong and active payments / RWA BD motion to work with large enterprises supporting them in their adoption of the Solana blockchain"
+  },
+  {
+    "question": "What is your approach to attract large companies and projects to use your Blockchain/L2?",
+    "answer": "Our primary focus is on demonstrating that Solana has both the best technical architecture combined with a thriving community of a) developers and b) large enterprise adoption. Most large enterprises follow the lead of large innovative companies that have already chosen Solana:\n- Paxos: Issued USDP on Solana, the first chain after Ethereum that required NY DFS approval\n- PayPal: Issued PYUSD on Solana, the first chain after Ethereum which also required NY DFS approval\n- Visa selected Solana as it's operational and scalable chain to scale it's issuer / acquirer settlement pilot using USDC\n- Stripe selected Solana, Polygon and Ethereum for it's crypto payments pilot announced at their Sessions conference earlier this year. The demo was done on stage by their founder on Solana"
+  },
+  {
+    "question": "What actions/programs/projects do you have in place to create synergies among projects on your platform?",
+    "answer": "Solana is a global state machine and as a result the entire ecosystem is composible. Virutally all assets are issued using the same token issuance program which allows tokens to be interoperable acrpss dApps. In addition, Foundation and ecosystem partners like Solana Labs and others have build core primitives to allow common frameworks - such as Solana Pay, Actions / Blinks, Various token extensions.\nFrom a community perspective we run many events that bring builders across verticals together to find complementary BD opportunities and integration opportunitues"
+  },
+  {
+    "question": "What incentives/actions/resources do you offer for new projects launching on your platform?",
+    "answer": "Solana Foundation works with enterprises such as Bitgo to develop a comprehensive GTM plan that leverages our platforms and community assets. Examples include:\n- Fee waived sponsorships for key events (e.g. PayFi summit, Hacker Houses, Breakpoint, community events)\n- Superteam activation in local markets - decentralized SWAT teams deployed as feet on the street to support grassroots activation\n- Amplification from key influencers, community leaders and Solana Foundation social accounts\n- White glove BD support connecting Bitso to key ecosystem dApps, DEXs, DeFi protocols, payment companies etc\n- White glove technical advisory\n- Grants for startups building on MXNB"
+  },
+  {
+    "question": "Do you offer any financial or technical incentives for strategic projects? Details and conditions?",
+    "answer": "We can offer grants to smaller companies contingent on them building ecosystem useful tools leveraging MXNB"
+  },
+  {
+    "question": "Do you have grant funds for development projects? If yes, what is the size range for those grants?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Do you help projects with marketing campaigns?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Would you be willing to subsidize gas fees if we decide to launch our project on your blockchain/L2?",
+    "answer": "Yes"
+  },
+  {
+    "question": "What is the size of your developer community?",
+    "answer": "We currently have 2856 monthly active open source developers https://www.developerreport.com/ecosystems/solana"
+  },
+  {
+    "question": "Are there any open source projects that are relevant to stablecoin development?",
+    "answer": "Yes. There are heavily audited token standards that exist to make launching a token easy, secure and extensible. It is currently used by large institutions such as PayPal. \nResources: \nPayPal: https://www.paypalobjects.com/devdoc/community/PYUSD-Solana-White-Paper.pdf\nToken documentation: https://solana.com/solutions/token-extensions"
+  },
+  {
+    "question": "Are there support and training programs for developers? If yes, please provide a list",
+    "answer": "There are a number of training programs hosted by educational groups. https://www.encode.club/, https://ackee.xyz/school-of-solana, https://turbin3.com/#education, https://www.calyptus.co/learn, https://solana.com/developers/courses, including a programs focused on latino developers in spanish and portuguese (https://es.w3d.community/t/solana, https://pt.w3d.community/t/solana, https://x.com/HeavyDutyBuild)"
+  },
+  {
+    "question": "Do you have testnets? Do you provide faucets for them?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Do you provide faucets or institutional access to tokens for testnets?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Do you organize hackathons or events for developers? Locations, attendees, results of previous events?",
+    "answer": "We organize a number of hackerhouses around the world. The events can be found on https://solana.com/events. Generally we have >1k developers in attendance for each hackerhouse. We also help run major hackathons that in the past have had >1k project submissions. The current hackathon running is by https://www.colosseum.org/radar\n\nWe also organize a number of Latam-specific hackathons and events in collaboration with local partners. We recently had 150+ teams participating in the Aleph Hackathon in with a $25K prize pool for the best Solana projects.The current running startup competition in Latam will be announced on September 2nd."
+  },
+  {
+    "question": "How accessible is the documentation for developers? Requirements to develop on your Blockchain/L2?",
+    "answer": "Full end to end documentation can be found on https://solana.com/docs. A software engineering background is required to build on Solana."
+  },
+  {
+    "question": "Are you planning to allocate actions/resources/support to grow in Latin America? Please provide examples",
+    "answer": "Yes"
+  },
+  {
+    "question": "Willingness to create a specific joint action plan in each country to support project success?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Do you provide technical assistance for integration/development and upgrades on your Blockchain/L2?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Can you adapt your infrastructure according to our project needs?",
+    "answer": "No"
+  },
+  {
+    "question": "Willingness to provide a smart contract auditor?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Is nonce management with your Blockchain/L2 EVM Compatible?",
+    "answer": "No"
+  },
+  {
+    "question": "If not, please explain how nonce management is handled",
+    "answer": "Nonce management is handled in two different ways depending on the speed of transaction signing and submission:\nFor transactions that are created and broadcasted within 1 minute:\nA recent blockhash is signed as part of the transaction which ensures the transaction is recent and fairly unique. This also enables fast parallel processing of transactions as the network does not require a sequential nonce per account like in Ethereum.\n\nFor transactions that require more than 1 minute:\nDurable nonces are used to ensure uniquness. A durable nonce account is used to receive a nonce that can be used exactly once. After usage, the durable nonce account creates a new nonce for the next usage. To process multiple transactions that require more than 1 minute for processing from the same account, multiple durable nonce accounts should be used. For more information, read through this guide."
+  },
+  {
+    "question": "What is the average transaction cost?",
+    "answer": "Median is less than $0.001"
+  },
+  {
+    "question": "What is the confirmation time for a block?",
+    "answer": "~1s"
+  },
+  {
+    "question": "How do you introduce new blocks to the network?",
+    "answer": "New blocks are introduced to the Solana network through a unique and efficient process that leverages several key innovations. Here's an overview of how block propagation works on Solana:\n1. Leader Selection\nSolana uses a Proof-of-Stake (PoS) consensus mechanism combined with Proof-of-History (PoH) to select block producers, called leaders. Leaders are responsible for creating and introducing new blocks to the network.\n2. Continuous Block Production\nUnlike many other blockchains, Solana operates with continuous block production:\n- Validators are selected as leaders for 4 consecutive slots\n- Each slot represents a fixed time interval (~400ms)\n- This allows for rapid block creation and propagation\n3. Turbine Block Propagation\nSolana employs a protocol called Turbine to efficiently distribute new blocks across the network:\n- The leader \"shreds\" the block data into smaller pieces\n- These shreds are then propagated to other validators in a structured manner\n- Validators reassemble the shreds to reconstruct the full block\n- This process ensures swift and efficient distribution of block data across Solana, maintaining high throughput.\n4. Gulf Stream\n- Solana's Gulf Stream protocol eliminates the need for a mempool by allowing validators to begin processing upcoming transactions before they're even included in a block. This further enhances the speed of block propagation and transaction processing.\n5. Validator Confirmation\nOnce a validator receives and reconstructs a block:\n- It checks the block's validity\n- The validator then checks for transaction confirmations within the same slot\n\nFor more information read this guide."
+  },
+  {
+    "question": "What's the incentive for users to keep the network secure?",
+    "answer": "The Solana network uses a Proof-of-Stake (PoS) consensus mechanism, which incentivizes users to stake their SOL tokens and delegate to validators or become validators. Staking helps secure the network by aligning economic interests with network security. Validators receive rewards from transaction fees and protocol-based inflation rewards for creating and validating (through voting) blocks."
+  },
+  {
+    "question": "What level of security does your Blockchain/L2 offer vs other similar protocols?",
+    "answer": "Solana provides a robust security model that is comparable to other blockchain protocols and often much better when compared to high throughput protocols.\n\nConsensus Mechanism:\nSolana uses a unique hybrid consensus mechanism combining Proof-of-Stake (PoS) with Proof-of-History (PoH):\n- The PoS component provides economic security through staking\n- PoH acts as a cryptographic clock, enhancing efficiency and security of the consensus process\n- This hybrid approach offers strong security while enabling high throughput and low latency.\nValidator Network:\nSolana's security relies on its decentralized network of validators:\n- As of 2024, there are about 4,500 validators securing the network (~1500 voting, ~3000 non-voting)\n- While this is fewer than some other major networks like Ethereum, it still provides a good level of decentralization\n- Validators are geographically distributed around the world and active stake is not reliant on any single hosting provider (largest hosting provider only supports 17% of active stake ensuring any major outage would not impact the broader network)\nSmart Contract Security:\n- The Solana Virtual Machine (SVM) provides several security features for smart contracts:\n- Memory safety through Rust's ownership model\n- Deterministic execution environment\n- Limited attack surface due to Solana's account model (reentrancy attacks are limited as well)"
+  },
+  {
+    "question": "Commitment for support in case of incidents?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Do you have alerts or notifications every time there is a halt or issue with the network?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Willingness to help with listings on Centralized Exchanges?",
+    "answer": "Yes"
+  },
+  {
+    "question": "Have any team members had a reputation event or claim?",
+    "answer": "No"
+  },
+  {
+    "question": "What is the governance of the blockchain?",
+    "answer": "Changes to the protocol are proposed through Solana Improvement Documents (SIMD): https://github.com/solana-foundation/solana-improvement-documents\n\nValidators can also vote for certain proposals that affect the network and new features are only added via explicit \"feature gates\""
+  },
+  {
+    "question": "Are there any reputation events or claims related to the blockchain or the native token?",
+    "answer": "There is a pending lawsuit related to the sale of the SOL token before the United States District Court for the Northern District of California, Young v. Solana Labs, Inc. et al (cand-3:2022-cv-03912). Solana Foundation is not a party to that lawsuit."
+  },
+  {
+    "question": "Is the activity carried out by the provider regulated or does it require any kind of registration, authorization, or license? If so, is such registration, authorization, or license in place?",
+    "answer": "No. The Solana Foundation is a private foundation organized under the laws of Switzerland. As such, it has certain reporting and other obligations, but the activities in which the Foundation engages do not require any special regulatory licenses."
+  },
+  {
+    "question": "Are your blockchain services offered to entities whose activities are regulated or for which registration, authorization, or licensing is required? If yes, do you have policies and procedures in place to verify that your clients have the applicable registration, authorization, or license?",
+    "answer": "The Solana Foundation is not a for-profit entity and does not provide any \"blockchain services\" as a business. The Solana Foundation's core activities, including the making of ecosystem grants and investments, may involve dealings with regulated entities. Where applicable, Solana Foundation may require specific contractual provisions, including reps and warranties, and conduct counterparty due diligence, including but not limited to, KYB checks on contractual counterparties."
+  }
+]

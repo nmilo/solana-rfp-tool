@@ -206,5 +206,29 @@ export const apiService = {
   async healthCheck(): Promise<{ status: string; service: string }> {
     const response = await api.get('/health');
     return response.data;
+  },
+
+  // Admin Knowledge Base Preview
+  async getKnowledgeBasePreview(page: number = 1, pageSize: number = 20, category?: string, search?: string): Promise<any> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      page_size: pageSize.toString()
+    });
+    
+    if (category) {
+      params.append('category', category);
+    }
+    
+    if (search) {
+      params.append('search', search);
+    }
+
+    const response = await api.get(`/api/v1/knowledge/admin/preview?${params}`);
+    return response.data;
+  },
+
+  async getKnowledgeBaseCategories(): Promise<any> {
+    const response = await api.get('/api/v1/knowledge/admin/categories');
+    return response.data;
   }
 };
