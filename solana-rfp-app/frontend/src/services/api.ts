@@ -7,7 +7,8 @@ import {
   QuestionSubmission 
 } from '../types';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://solana-rfp-271974794838.herokuapp.com';
+// Use Vercel serverless functions - no Heroku needed!
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
