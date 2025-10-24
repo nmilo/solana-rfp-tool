@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: Optional[str] = None
     
+    # Supabase Configuration
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_ANON_KEY: Optional[str] = None
+    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
+    
     # OpenAI
     OPENAI_API_KEY: Optional[str] = None
     
@@ -34,5 +39,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "allow"  # Allow extra fields to prevent validation errors
 
 settings = Settings()
