@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
+import json
 from app.core.database import get_db
 from app.services.knowledge_service import KnowledgeBaseService
 from app.services.document_service import DocumentService
@@ -197,3 +198,52 @@ async def get_knowledge_base_stats(
         "categories": categories,
         "top_tags": dict(sorted(tags.items(), key=lambda x: x[1], reverse=True)[:10])
     }
+
+@router.post("/initialize")
+async def initialize_knowledge_base(
+    kb_service: KnowledgeBaseService = Depends(get_kb_service),
+    current_user = Depends(get_current_user)
+):
+    """Initialize knowledge base with sample data"""
+    # Sample knowledge base data
+    sample_data = [
+        {
+            "question": "Are there support and training programs for developers?",
+            "answer": "Yes, Solana Foundation provides comprehensive support and training programs for developers including: 1) Solana University - free online courses covering blockchain basics to advanced development, 2) Developer Bootcamps - intensive hands-on training sessions, 3) Hackathons - regular competitions with prizes and mentorship, 4) Technical Documentation - extensive guides and tutorials, 5) Community Support - active Discord channels and forums, 6) Grant Programs - funding for innovative projects, 7) Mentorship Programs - pairing with experienced developers.",
+            "category": "developer_support",
+            "tags": ["support", "training", "developers", "education", "grants"]
+        },
+        {
+            "question": "Do you have testnets? Do you provide faucets for them?",
+            "answer": "Yes, Solana operates multiple testnets: 1) Devnet - for development and testing, 2) Testnet - for integration testing, 3) Mainnet Beta - production network. Faucets are available for Devnet and Testnet to provide free SOL tokens for testing. The main faucet is at https://faucet.solana.com/ and provides up to 2 SOL per request for development purposes.",
+            "category": "testnets",
+            "tags": ["testnet", "devnet", "faucet", "testing", "sol"]
+        },
+        {
+            "question": "Do you provide faucets or institutional access to tokens for testnets?",
+            "answer": "Yes, Solana provides both public faucets and institutional access: 1) Public Faucets - Available at https://faucet.solana.com/ for individual developers, 2) Institutional Faucets - For organizations requiring larger amounts, contact the Solana Foundation for custom faucet access, 3) API Access - Programmatic faucet access available for automated testing, 4) Partner Faucets - Third-party services also provide faucet functionality.",
+            "category": "faucets",
+            "tags": ["faucet", "institutional", "api", "testing", "tokens"]
+        },
+        {
+            "question": "Do you organize hackathons or events for developers? Locations, attendees, results of previous events?",
+            "answer": "Yes, Solana Foundation organizes numerous hackathons and events globally: 1) Solana Hacker Houses - Regular events in major cities (San Francisco, New York, London, Tokyo, Singapore), 2) Online Hackathons - Virtual events with global participation, 3) University Partnerships - Campus events at leading universities, 4) Previous Results - Over 10,000 developers have participated, with $50M+ in prizes awarded, 5) Notable Winners - Projects like Magic Eden, Jupiter, and Orca started as hackathon projects, 6) Upcoming Events - Check https://solana.com/events for current schedule.",
+            "category": "events",
+            "tags": ["hackathons", "events", "developers", "prizes", "global"]
+        },
+        {
+            "question": "What are the key partnerships you have in the stablecoin sector?",
+            "answer": "The Solana network is open and permissionless; stablecoin issuers don't need a formal agreement with the Foundation. However, the Foundation actively supports issuers informally with technical, ecosystem, and business advisory. Examples include PayPal (PYUSD, leveraging token extensions for compliance features), Paxos (USDP, first post-Ethereum NYDFS approval), USDT (~$0.7 B supply), and EURC by Circle.",
+            "category": "stablecoins",
+            "tags": ["stablecoin", "partnerships", "paypal", "paxos", "usdc", "usdt", "eurc"]
+        }
+    ]
+    
+    try:
+        imported_count = kb_service.import_from_json(sample_data, created_by=current_user.email)
+        return {
+            "message": f"Successfully initialized knowledge base with {imported_count} entries",
+            "imported_count": imported_count
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error initializing knowledge base: {str(e)}")
