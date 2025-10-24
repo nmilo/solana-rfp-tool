@@ -2,6 +2,10 @@
   "name": "solana-rfp-tool",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "build": "cd solana-rfp-app/frontend && npm install && npm run build",
+    "install": "cd solana-rfp-app/frontend && npm install"
+  },
   "engines": {
     "node": "22.x"
   }
