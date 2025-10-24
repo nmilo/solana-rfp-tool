@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
-from app.api import knowledge, questions, auth, export
+from app.api import knowledge, questions, auth, export, ai_upload
 from app.core.startup import initialize_application
 from app.core.logger import main_logger
 
@@ -31,6 +31,7 @@ app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])
 app.include_router(knowledge.router, prefix="/api/v1/knowledge", tags=["knowledge"])
 app.include_router(questions.router, prefix="/api/v1/questions", tags=["questions"])
 app.include_router(export.router, prefix="/api/v1/export", tags=["export"])
+app.include_router(ai_upload.router, prefix="/api/v1/ai", tags=["ai-upload"])
 
 # Startup event
 @app.on_event("startup")
