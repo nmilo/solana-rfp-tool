@@ -1,11 +1,12 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "solana-rfp-app/backend/Dockerfile"
-dockerContext = "solana-rfp-app/backend"
+dockerfilePath = "Dockerfile"
+dockerContext = "."
 
 [deploy]
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
+rootDirectory = "solana-rfp-app/backend"
 
 [deploy.healthcheck]
 path = "/health"
