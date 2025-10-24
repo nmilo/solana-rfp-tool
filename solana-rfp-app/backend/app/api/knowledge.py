@@ -4,6 +4,7 @@ from typing import List, Optional
 import json
 import asyncio
 import openai
+import traceback
 from app.core.database import get_db
 from app.services.knowledge_service import KnowledgeBaseService
 from app.services.document_service import DocumentService
@@ -65,7 +66,7 @@ def get_kb_service(db: Session = Depends(get_db)) -> KnowledgeBaseService:
 def get_document_service() -> DocumentService:
     return DocumentService()
 
-@router.get("/entries", response_model=List[KnowledgeBaseResponse])
+@router.get("/entries")
 async def get_all_entries(
     category: Optional[str] = Query(None),
     tags: Optional[str] = Query(None),
@@ -73,9 +74,14 @@ async def get_all_entries(
     current_user = Depends(get_current_user)
 ):
     """Get all knowledge base entries with optional filtering"""
-    tag_list = tags.split(',') if tags else None
-    entries = kb_service.get_all_entries(category=category, tags=tag_list)
-    return entries
+    try:
+        tag_list = tags.split(',') if tags else None
+        entries = kb_service.get_all_entries(category=category, tags=tag_list)
+        return entries
+    except Exception as e:
+        print(f"Error in get_all_entries: {str(e)}")
+        print(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail=f"Error retrieving entries: {str(e)}")
 
 @router.post("/entries", response_model=KnowledgeBaseResponse)
 async def add_entry(
