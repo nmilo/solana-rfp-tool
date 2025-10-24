@@ -8,5 +8,15 @@
         "distDir": "build"
       }
     }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://solana-rfp-tool.onrender.com/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
   ]
 }

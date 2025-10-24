@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
@@ -22,8 +22,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Include routers
@@ -64,6 +65,11 @@ async def root():
 @app.get("/{full_path:path}")
 async def catch_all(full_path: str):
     """Catch-all route for unknown paths"""
+    # Exclude static files and common frontend assets
+    static_extensions = {'.json', '.js', '.css', '.ico', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.woff', '.woff2', '.ttf', '.eot'}
+    if any(full_path.lower().endswith(ext) for ext in static_extensions):
+        raise HTTPException(status_code=404, detail="Static file not found")
+    
     return {"error": "Not found", "path": full_path, "message": "This is a backend API only"}
 
 if __name__ == "__main__":

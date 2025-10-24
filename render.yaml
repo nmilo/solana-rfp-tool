@@ -19,5 +19,7 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      - key: BACKEND_CORS_ORIGINS
+        value: "http://localhost:3000,http://localhost:8000,https://solana-rfp-tool-9srn49yd6-nmilos-projects.vercel.app,https://solana-rfp-tool.vercel.app"
       - key: PYTHON_VERSION
         value: "3.12.0"
