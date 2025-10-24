@@ -8,6 +8,7 @@ from app.core.database import get_db
 from app.services.knowledge_service import KnowledgeBaseService
 from app.services.document_service import DocumentService
 from app.core.config import settings
+from app.core.logger import main_logger, log_error, log_database_operation
 from app.models.schemas import (
     KnowledgeBaseCreate, 
     KnowledgeBaseUpdate, 
@@ -388,8 +389,11 @@ async def get_knowledge_base_preview(
 ):
     """Get knowledge base entries for admin preview"""
     try:
+        main_logger.info(f"Admin preview request - page: {page}, page_size: {page_size}, category: {category}, search: {search}")
+        
         # Get all entries
         all_entries = kb_service.get_all_active_entries()
+        main_logger.info(f"Retrieved {len(all_entries)} entries for admin preview")
         
         # Apply filters
         filtered_entries = all_entries
@@ -446,6 +450,13 @@ async def get_knowledge_base_preview(
         }
         
     except Exception as e:
+        log_error(main_logger, e, "get_knowledge_base_preview", {
+            "page": page,
+            "page_size": page_size,
+            "category": category,
+            "search": search,
+            "user": current_user.email if hasattr(current_user, 'email') else 'unknown'
+        })
         raise HTTPException(status_code=500, detail=f"Error getting knowledge base preview: {str(e)}")
 
 @router.get("/admin/categories")

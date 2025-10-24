@@ -6,6 +6,7 @@ import re
 import json
 from app.models.database import KnowledgeBase
 from app.models.schemas import KnowledgeBaseCreate, KnowledgeBaseUpdate
+from app.core.logger import main_logger, log_error, log_database_operation
 
 class KnowledgeBaseService:
     def __init__(self, db: Session):
@@ -42,7 +43,16 @@ class KnowledgeBaseService:
     
     def get_all_active_entries(self) -> List[KnowledgeBase]:
         """Get all active knowledge base entries"""
-        return self.db.query(KnowledgeBase).filter(KnowledgeBase.is_active == True).all()
+        try:
+            main_logger.info("Fetching all active knowledge base entries")
+            entries = self.db.query(KnowledgeBase).filter(KnowledgeBase.is_active == True).all()
+            main_logger.info(f"Successfully fetched {len(entries)} active entries")
+            log_database_operation("SELECT", "knowledge_base", f"Retrieved {len(entries)} active entries", True)
+            return entries
+        except Exception as e:
+            log_error(main_logger, e, "get_all_active_entries", {"query": "SELECT * FROM knowledge_base WHERE is_active = True"})
+            log_database_operation("SELECT", "knowledge_base", f"Failed to retrieve entries: {str(e)}", False)
+            raise
     
     def search_answers(self, question: str, min_confidence: float = 0.1) -> List[Dict]:
         """Search knowledge base for answers to a question with priority system"""
@@ -259,34 +269,41 @@ class KnowledgeBaseService:
     
     def add_entry(self, entry_data: KnowledgeBaseCreate, created_by: str = "admin") -> Dict:
         """Add new knowledge base entry"""
-        # Check for duplicates
-        existing = self.search_answers(entry_data.question, min_confidence=0.8)
-        if existing:
-            raise ValueError("Similar question already exists in knowledge base")
-        
-        # Add to database with all required fields
-        kb_entry = KnowledgeBase(
-            question=entry_data.question,
-            answer=entry_data.answer,
-            category=entry_data.category,
-            confidence_threshold=0.1,  # Default confidence threshold
-            is_active=True,  # Default to active
-            created_by=created_by,
-            last_modified_by=created_by
-        )
-        kb_entry.set_tags(entry_data.tags or [])
-        self.db.add(kb_entry)
-        self.db.commit()
-        self.db.refresh(kb_entry)
-        
-        # Rebuild index
-        self._rebuild_index()
-        
-        return {
-            "id": kb_entry.id,
-            "question": kb_entry.question,
-            "answer": kb_entry.answer,
-            "tags": kb_entry.get_tags(),
+        try:
+            main_logger.info(f"Adding new knowledge base entry: {entry_data.question[:50]}...")
+            
+            # Check for duplicates
+            existing = self.search_answers(entry_data.question, min_confidence=0.8)
+            if existing:
+                main_logger.warning(f"Duplicate question found: {entry_data.question[:50]}...")
+                raise ValueError("Similar question already exists in knowledge base")
+            
+            # Add to database with all required fields
+            kb_entry = KnowledgeBase(
+                question=entry_data.question,
+                answer=entry_data.answer,
+                category=entry_data.category,
+                confidence_threshold=0.1,  # Default confidence threshold
+                is_active=True,  # Default to active
+                created_by=created_by,
+                last_modified_by=created_by
+            )
+            kb_entry.set_tags(entry_data.tags or [])
+            self.db.add(kb_entry)
+            self.db.commit()
+            self.db.refresh(kb_entry)
+            
+            main_logger.info(f"Successfully added entry with ID: {kb_entry.id}")
+            log_database_operation("INSERT", "knowledge_base", f"Added entry {kb_entry.id}", True)
+            
+            # Rebuild index
+            self._rebuild_index()
+            
+            return {
+                "id": kb_entry.id,
+                "question": kb_entry.question,
+                "answer": kb_entry.answer,
+                "tags": kb_entry.get_tags(),
             "category": kb_entry.category,
             "confidence_threshold": kb_entry.confidence_threshold,
             "is_active": kb_entry.is_active,
@@ -295,6 +312,16 @@ class KnowledgeBaseService:
             "created_by": kb_entry.created_by,
             "last_modified_by": kb_entry.last_modified_by
         }
+        
+        except Exception as e:
+            log_error(main_logger, e, "add_entry", {
+                "question": entry_data.question[:100],
+                "created_by": created_by,
+                "category": entry_data.category
+            })
+            log_database_operation("INSERT", "knowledge_base", f"Failed to add entry: {str(e)}", False)
+            self.db.rollback()
+            raise
     
     def update_entry(self, entry_id: str, update_data: KnowledgeBaseUpdate, modified_by: str = "admin") -> Dict:
         """Update knowledge base entry"""
