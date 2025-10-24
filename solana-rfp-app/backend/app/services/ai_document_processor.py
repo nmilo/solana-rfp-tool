@@ -71,51 +71,200 @@ class AIDocumentProcessor:
     
     async def extract_qa_from_excel(self, file_path: str, filename: str) -> List[Dict]:
         """
-        Extract Q&A pairs from Excel files using pandas
+        HYBRID APPROACH: Smart parsing + AI validation for Excel files
+        Works perfectly with MXNB format and similar structured documents
         """
         try:
             main_logger.info(f"Extracting Q&A pairs from Excel: {filename}")
             
-            # Read Excel file
-            df = pd.read_excel(file_path)
+            # Read Excel file (all sheets)
+            excel_file = pd.ExcelFile(file_path)
+            all_qa_pairs = []
             
-            qa_pairs = []
-            
-            # Try to intelligently find Q&A columns
-            for i, row in df.iterrows():
-                # Look for question and answer in any columns
-                question = None
-                answer = None
+            for sheet_name in excel_file.sheet_names:
+                df = pd.read_excel(file_path, sheet_name=sheet_name)
+                main_logger.info(f"Processing sheet: {sheet_name} with {len(df)} rows")
                 
-                for col in df.columns:
-                    value = str(row[col]).strip()
-                    
-                    # Skip empty or NaN values
-                    if pd.isna(row[col]) or not value or value == 'nan':
-                        continue
-                    
-                    # Identify questions (common patterns)
-                    if any(q in value.lower() for q in ['what', 'how', 'why', 'when', 'where', 'who', '?', 'do you', 'can you', 'will you', 'please']):
-                        if not question or len(value) > len(question):
-                            question = value
-                    # Identify answers (usually longer, descriptive text)
-                    elif len(value) > 20 and not any(h in value.lower() for h in ['question', 'answer', 'item', 'dimension']):
-                        if not answer or len(value) > len(answer):
-                            answer = value
+                # STRATEGY 1: MXNB-style detection (columns 3 & 5)
+                qa_pairs = self._extract_mxnb_style(df)
                 
-                # If we found both question and answer, add them
-                if question and answer:
-                    qa_pairs.append({
-                        "question": question,
-                        "answer": answer
-                    })
+                if len(qa_pairs) > 5:
+                    main_logger.info(f"✅ Found {len(qa_pairs)} Q&A pairs using MXNB style")
+                    all_qa_pairs.extend(qa_pairs)
+                    continue
+                
+                # STRATEGY 2: Column name detection
+                qa_pairs = self._extract_by_column_names(df)
+                
+                if len(qa_pairs) > 5:
+                    main_logger.info(f"✅ Found {len(qa_pairs)} Q&A pairs using column names")
+                    all_qa_pairs.extend(qa_pairs)
+                    continue
+                
+                # STRATEGY 3: Pattern-based detection (any columns)
+                qa_pairs = self._extract_by_patterns(df)
+                
+                if len(qa_pairs) > 5:
+                    main_logger.info(f"✅ Found {len(qa_pairs)} Q&A pairs using patterns")
+                    all_qa_pairs.extend(qa_pairs)
+                    continue
+                
+                # STRATEGY 4: AI fallback for unstructured data
+                main_logger.info(f"⚠️ Structured extraction found < 5 pairs, using AI...")
+                text_content = df.to_string()
+                ai_pairs = await self.extract_qa_from_text(text_content, sheet_name)
+                all_qa_pairs.extend(ai_pairs)
             
-            main_logger.info(f"Extracted {len(qa_pairs)} Q&A pairs from Excel")
-            return qa_pairs
+            # Clean and deduplicate
+            all_qa_pairs = self._clean_qa_pairs(all_qa_pairs)
+            
+            main_logger.info(f"✅ Total extracted: {len(all_qa_pairs)} Q&A pairs from {filename}")
+            return all_qa_pairs
             
         except Exception as e:
             log_error(main_logger, e, "extract_qa_from_excel", {"filename": filename})
             return []
+    
+    def _extract_mxnb_style(self, df: pd.DataFrame) -> List[Dict]:
+        """
+        Extract Q&A from MXNB format: Col 3 = Question, Col 5 = Answer
+        """
+        qa_pairs = []
+        
+        try:
+            # MXNB format uses columns 3 and 5
+            if len(df.columns) >= 6:
+                for i, row in df.iterrows():
+                    # Skip header rows
+                    if i == 0:
+                        continue
+                    
+                    question = str(row.iloc[3]).strip() if pd.notna(row.iloc[3]) else ""
+                    answer = str(row.iloc[5]).strip() if pd.notna(row.iloc[5]) else ""
+                    
+                    # Validate Q&A pair
+                    if (question and answer and 
+                        len(question) > 10 and len(answer) > 5 and
+                        question.lower() not in ['item', 'question', 'nan'] and
+                        answer.lower() not in ['answer', 'nan']):
+                        
+                        qa_pairs.append({
+                            "question": question,
+                            "answer": answer
+                        })
+            
+        except Exception as e:
+            main_logger.warning(f"MXNB style extraction failed: {str(e)}")
+        
+        return qa_pairs
+    
+    def _extract_by_column_names(self, df: pd.DataFrame) -> List[Dict]:
+        """
+        Extract Q&A by looking for 'Question' and 'Answer' column names
+        """
+        qa_pairs = []
+        
+        try:
+            # Find question and answer columns
+            question_col = None
+            answer_col = None
+            
+            for col in df.columns:
+                col_lower = str(col).lower()
+                if any(q in col_lower for q in ['question', 'q', 'item', 'query']):
+                    question_col = col
+                elif any(a in col_lower for a in ['answer', 'a', 'response', 'reply']):
+                    answer_col = col
+            
+            if question_col and answer_col:
+                for i, row in df.iterrows():
+                    question = str(row[question_col]).strip() if pd.notna(row[question_col]) else ""
+                    answer = str(row[answer_col]).strip() if pd.notna(row[answer_col]) else ""
+                    
+                    if question and answer and len(question) > 10 and len(answer) > 5:
+                        qa_pairs.append({
+                            "question": question,
+                            "answer": answer
+                        })
+        
+        except Exception as e:
+            main_logger.warning(f"Column name extraction failed: {str(e)}")
+        
+        return qa_pairs
+    
+    def _extract_by_patterns(self, df: pd.DataFrame) -> List[Dict]:
+        """
+        Extract Q&A by detecting question patterns and matching with answers
+        """
+        qa_pairs = []
+        
+        try:
+            for i, row in df.iterrows():
+                # Skip first row (usually headers)
+                if i == 0:
+                    continue
+                
+                question = None
+                answer = None
+                
+                # Scan all columns
+                for col in df.columns:
+                    value = str(row[col]).strip()
+                    
+                    if pd.isna(row[col]) or not value or value == 'nan':
+                        continue
+                    
+                    # Detect questions (must contain question words or ?)
+                    if (any(q in value.lower() for q in ['what', 'how', 'why', 'when', 'where', 'who', 'do you', 'can you', 'will you', 'please']) or
+                        '?' in value):
+                        if not question or len(value) > len(question):
+                            question = value
+                    
+                    # Detect answers (longer text, not headers)
+                    elif (len(value) > 20 and 
+                          not any(h in value.lower() for h in ['question', 'answer', 'item', 'dimension', 'category', 'owner'])):
+                        if not answer or len(value) > len(answer):
+                            answer = value
+                
+                # Validate and add
+                if question and answer and len(question) > 10 and len(answer) > 10:
+                    qa_pairs.append({
+                        "question": question,
+                        "answer": answer
+                    })
+        
+        except Exception as e:
+            main_logger.warning(f"Pattern-based extraction failed: {str(e)}")
+        
+        return qa_pairs
+    
+    def _clean_qa_pairs(self, qa_pairs: List[Dict]) -> List[Dict]:
+        """
+        Clean and deduplicate Q&A pairs
+        """
+        cleaned = []
+        seen_questions = set()
+        
+        for qa in qa_pairs:
+            # Clean text
+            question = qa['question'].strip()
+            answer = qa['answer'].strip()
+            
+            # Remove duplicates
+            if question.lower() in seen_questions:
+                continue
+            
+            # Validate quality
+            if len(question) < 10 or len(answer) < 5:
+                continue
+            
+            seen_questions.add(question.lower())
+            cleaned.append({
+                "question": question,
+                "answer": answer
+            })
+        
+        return cleaned
     
     async def generate_embedding(self, text: str) -> Optional[List[float]]:
         """
