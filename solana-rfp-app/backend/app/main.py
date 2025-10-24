@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
@@ -18,6 +18,7 @@ app = FastAPI(
 )
 
 # CORS middleware
+print(f"Setting up CORS with origins: {settings.cors_origins_list}")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins_list,
@@ -26,6 +27,25 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"],
 )
+
+# Manual CORS handler for debugging
+@app.middleware("http")
+async def cors_handler(request: Request, call_next):
+    origin = request.headers.get("origin")
+    print(f"CORS request from origin: {origin}")
+    print(f"Allowed origins: {settings.cors_origins_list}")
+    
+    response = await call_next(request)
+    
+    # Add CORS headers manually if needed
+    if origin in settings.cors_origins_list:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Expose-Headers"] = "*"
+    
+    return response
 
 # Include routers
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["authentication"])
@@ -48,9 +68,46 @@ async def startup_event():
 
 # Backend-only: No frontend static files
 
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str, request: Request):
+    """Handle OPTIONS requests for CORS preflight"""
+    origin = request.headers.get("origin")
+    print(f"OPTIONS request from origin: {origin}")
+    
+    # Check if origin is allowed
+    if origin in settings.cors_origins_list:
+        return Response(
+            status_code=200,
+            headers={
+                "Access-Control-Allow-Origin": origin,
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Max-Age": "86400",
+            }
+        )
+    else:
+        return Response(
+            status_code=403,
+            headers={
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                "Access-Control-Allow-Headers": "*",
+            }
+        )
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "service": "solana-rfp-api"}
+
+@app.get("/cors-test")
+async def cors_test():
+    """Test endpoint to verify CORS is working"""
+    return {
+        "message": "CORS test successful",
+        "cors_origins": settings.cors_origins_list,
+        "timestamp": "2025-01-24T15:30:00Z"
+    }
 
 @app.get("/")
 async def root():
