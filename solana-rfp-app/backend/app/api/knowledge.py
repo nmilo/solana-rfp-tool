@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File, 
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
+import asyncio
 from app.core.database import get_db
 from app.services.knowledge_service import KnowledgeBaseService
 from app.services.document_service import DocumentService
@@ -170,6 +171,142 @@ async def upload_document(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing document: {str(e)}")
+
+@router.post("/upload-multiple-documents")
+async def upload_multiple_documents(
+    files: List[UploadFile] = File(...),
+    category: Optional[str] = Form(None),
+    tags: Optional[str] = Form(None),
+    kb_service: KnowledgeBaseService = Depends(get_kb_service),
+    document_service: DocumentService = Depends(get_document_service),
+    current_user = Depends(get_current_user)
+):
+    """Upload and process multiple documents to add to knowledge base"""
+    if not files:
+        raise HTTPException(status_code=400, detail="No files provided")
+    
+    if len(files) > 10:  # Limit to 10 files at once
+        raise HTTPException(status_code=400, detail="Maximum 10 files allowed per upload")
+    
+    # Validate all files first
+    supported_formats = ['pdf', 'docx', 'doc', 'xlsx', 'xls']
+    for file in files:
+        if not file.filename:
+            raise HTTPException(status_code=400, detail=f"File {file.filename} has no name")
+        
+        file_extension = file.filename.lower().split('.')[-1]
+        if file_extension not in supported_formats:
+            raise HTTPException(status_code=400, detail=f"Unsupported file format '{file_extension}' in {file.filename}. Supported formats: {', '.join(supported_formats)}")
+    
+    # Parse tags
+    tag_list = [tag.strip() for tag in tags.split(',')] if tags else []
+    
+    # Process files concurrently
+    async def process_single_file(file: UploadFile) -> dict:
+        try:
+            # Read file content
+            file_content = await file.read()
+            
+            # Extract text from document
+            text = await document_service.extract_text_from_file(file_content, file.filename)
+            
+            if not text.strip():
+                return {
+                    "filename": file.filename,
+                    "status": "error",
+                    "error": f"No text could be extracted from the {file.filename.split('.')[-1].upper()} file",
+                    "extracted_questions": 0,
+                    "added_entries": 0,
+                    "skipped_entries": 0,
+                    "added_questions": [],
+                    "skipped_questions": []
+                }
+            
+            # Extract questions from text
+            try:
+                questions = await document_service.extract_questions_from_text(text)
+            except ValueError:
+                # Fallback to simple extraction
+                questions = document_service.extract_questions_simple(text)
+            
+            if not questions:
+                return {
+                    "filename": file.filename,
+                    "status": "error",
+                    "error": "No questions could be extracted from the document",
+                    "extracted_questions": 0,
+                    "added_entries": 0,
+                    "skipped_entries": 0,
+                    "added_questions": [],
+                    "skipped_questions": []
+                }
+            
+            # Add questions to knowledge base
+            added_entries = []
+            skipped_entries = []
+            
+            for question in questions:
+                try:
+                    # Create a basic answer placeholder
+                    answer = f"This question was extracted from the uploaded document: {file.filename}. Please review and provide a proper answer."
+                    
+                    entry_data = KnowledgeBaseCreate(
+                        question=question,
+                        answer=answer,
+                        category=category or "Uploaded Document",
+                        tags=tag_list + ["uploaded", "needs-review"]
+                    )
+                    
+                    result = kb_service.add_entry(entry_data, created_by=current_user.email)
+                    added_entries.append(result)
+                    
+                except ValueError as e:
+                    # Skip duplicate entries
+                    skipped_entries.append({"question": question, "reason": str(e)})
+            
+            return {
+                "filename": file.filename,
+                "status": "success",
+                "extracted_questions": len(questions),
+                "added_entries": len(added_entries),
+                "skipped_entries": len(skipped_entries),
+                "added_questions": [entry["question"] for entry in added_entries],
+                "skipped_questions": [entry["question"] for entry in skipped_entries]
+            }
+            
+        except Exception as e:
+            return {
+                "filename": file.filename,
+                "status": "error",
+                "error": f"Error processing document: {str(e)}",
+                "extracted_questions": 0,
+                "added_entries": 0,
+                "skipped_entries": 0,
+                "added_questions": [],
+                "skipped_questions": []
+            }
+    
+    # Process all files concurrently
+    results = await asyncio.gather(*[process_single_file(file) for file in files])
+    
+    # Calculate totals
+    total_files = len(files)
+    successful_files = len([r for r in results if r["status"] == "success"])
+    failed_files = total_files - successful_files
+    total_questions = sum(r["extracted_questions"] for r in results)
+    total_added = sum(r["added_entries"] for r in results)
+    total_skipped = sum(r["skipped_entries"] for r in results)
+    
+    return {
+        "message": f"Processed {total_files} files: {successful_files} successful, {failed_files} failed",
+        "total_files": total_files,
+        "successful_files": successful_files,
+        "failed_files": failed_files,
+        "total_extracted_questions": total_questions,
+        "total_added_entries": total_added,
+        "total_skipped_entries": total_skipped,
+        "file_results": results
+    }
 
 @router.get("/stats")
 async def get_knowledge_base_stats(

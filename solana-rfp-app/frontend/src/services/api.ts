@@ -102,6 +102,40 @@ export const apiService = {
     return response.data;
   },
 
+  async uploadMultipleDocuments(files: File[], category?: string, tags?: string): Promise<{
+    message: string;
+    total_files: number;
+    successful_files: number;
+    failed_files: number;
+    total_extracted_questions: number;
+    total_added_entries: number;
+    total_skipped_entries: number;
+    file_results: Array<{
+      filename: string;
+      status: 'success' | 'error';
+      error?: string;
+      extracted_questions: number;
+      added_entries: number;
+      skipped_entries: number;
+      added_questions: string[];
+      skipped_questions: string[];
+    }>;
+  }> {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file);
+    });
+    if (category) formData.append('category', category);
+    if (tags) formData.append('tags', tags);
+    
+    const response = await api.post('/api/v1/knowledge/upload-multiple-documents', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
   // Question Processing
   async processTextQuestions(text: string): Promise<ProcessingResult> {
     const response = await api.post('/api/v1/questions/process-text', { text });
